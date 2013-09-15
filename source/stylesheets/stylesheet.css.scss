@@ -1,0 +1,266 @@
+//= depend_on _menu.scss
+//= depend_on _base.scss
+
+@import "base"; // Base
+@import "menu"; // Menu
+
+body {
+	color: $bodyTextColor;
+	margin: 0;
+	padding: 0;
+	font-family: Arial, Helvetica, sans-serif;
+	// Reset Counters
+	counter-reset: h2 h3;
+}
+/*div*/.header {
+	box-shadow: 0 0 20px black;
+	border-radius: 5px;
+	position: relative;
+	z-index: 15;
+}
+/*div*/.imgHeader {
+	position: relative;
+	$headerImageHeight: 70px; // XXX Use image-height("header.jpeg");
+	$headerImageWidth : 0; // XXX Use image-width("header.jpeg");
+	height: $headerImageHeight;
+	background-color: $header-background;
+	background-repeat: no-repeat;
+	border-radius: 5px 5px 0 0;
+	.link {
+		float: left;
+		border-radius: 5px 0 0;
+		// XXX Restore background-image: image-url("header.jpeg");
+		height: $headerImageHeight;
+		width: $headerImageWidth;
+		&:after {
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			content: attr(data-text);
+			color: $siteTitleColor;
+			font-size: 1em;
+			padding: 0 0.5em;
+			text-decoration: none;
+		}
+	}
+	%text-style {
+		text-decoration: none;
+		font-weight: bold;
+		font-size: $siteTitleSize;
+		color: $siteTitleColor;
+	}
+	.text {
+		float: right;
+		line-height: $headerImageHeight;
+		padding-right: 1em;
+		@extend %text-style;
+		a {
+			@extend %text-style;
+		}
+	}
+}
+.main {
+	// Opera and IE support Opera and IE do not support viewport-relative units
+	width: $contentWidth;
+	min-width: $contentMinWidth;
+	margin: 0 auto;
+	margin-bottom: 90%;
+	padding-top: 1em;
+	text-align: center;
+	position: relative;
+	z-index: 0;
+}
+.gradient {
+	position: fixed;
+	z-index: -1;
+	width: 100%;
+	height: 100%;
+	background-color: $toColor; // Fallback for browsers that do not support CSS3 gradients
+	
+	$line-gradient: repeating-linear-gradient(-45deg, rgba(0,0,255,0.1), transparent 1px, transparent 2px);
+	$gradient: linear-gradient(top, $fromColor, $toColor 30%);
+	
+	background-image: prefix(-owg, $gradient);                  // Old Webkit
+	background-image: prefix(-webkit, $gradient);               // WebKit
+	background-image: prefix(-moz, $line-gradient, $gradient);  // Firefox
+	background-image: prefix(-o, $line-gradient, $gradient);    // Opera
+	background-image: $gradient;                                // W3C Spec
+}
+.innerMain {
+	position: relative;
+	text-align: left;
+	margin: 0 $indentWidth;
+	padding: 1em;
+	background: $innerMainBG;
+	box-shadow: 0 0 9px rgba(0,0,0,1);
+	border-radius: 0 0 $border-radius $border-radius;
+	font-size: $innerFontSize;
+}
+.contentHeader { 
+	margin: 0; // remove user-agent css
+	color: $pageHeaderColor;
+}
+.copyright {
+	float: right;
+	color: white;
+	margin-right: $indentWidth;
+	padding-top: 0.3em;
+	a { text-decoration: none; color: white; }
+}
+/* LOOK AT !EDIT! */
+.option {
+	background-color: $optionColor;
+	b {
+		font-size: 1.2em;
+		font-style: normal;
+	}
+	p { margin: 0.1em; }
+	span {
+		padding: 0.1em;
+		font-style: italic;
+	}
+}
+.codeblock {
+	margin: 2em 4em;
+	padding: 0.5em;
+	background-color: $codeBackground;
+	font-size: $codeFontSize;
+	overflow-x: auto;
+}
+.description {
+	margin-left: 3em;
+	.outdatedVersion {
+		color: #8A8A8A;
+	}
+}
+.section1>p, .section1>img, .section1>table, .section1>pre, .section1>h3 {
+	margin-left: 1em;
+}
+.section2>p, /*div*/.section2>img, /*div*/.section2>table, /*div*/.section2>pre, /*div*/.section2>h4 {
+	margin-left: 2em;
+}
+.section3>p, /*div*/.section3>img, /*div*/.section3>table, /*div*/.section3>pre {
+	margin-left: 3em;
+}
+.type {
+	a.type {
+		font-size: 1.2em;
+		color: $typeColor;
+	}
+}
+table {
+	background-color: $tableBG;
+	padding: 1em;
+	border-collapse: collapse;
+	a {
+		color: blue;
+		text-decoration: none;
+	}
+}
+th,td {
+	padding: 0.05em 0.5em;
+}
+.vAlignTop { vertical-align: top;}
+.table {
+	border: 1px solid black;
+}
+/*a*/.type {
+	color: #4E5B72;
+}
+.center {
+	margin: 0 auto;
+	text-align: center;
+}
+.call span {
+	background-color: $callBG;
+	overflow:auto;
+	padding: 0.3em;
+	font-size: larger;
+}
+.call span a {
+	font-style: italic;
+	text-decoration: none;
+}
+.sect1 {
+	padding-left: 1em;
+}
+.small {
+	font-size: small;
+	font-family: monospace;
+}
+.hidden {
+	visibility: hidden;
+	height: 0;
+	width: 0;
+	margin: 0;
+	padding: 0;
+}
+.tocList li {
+	list-style: none;
+	display: inline-block;
+}
+.tocList li:after {
+	content: ","
+}
+.tocList li:last-child:after {
+	content: "";
+}
+/* Breadcrumbs */
+.breadcrumbs a { text-decoration: none; }
+.breadcrumbs *:last-child { font-weight: bold; }
+
+/* Search */
+.search {
+	text-align: center;
+	margin-top: 1em;
+}
+
+/* Footer */
+.footer { display: block; padding-bottom: 0.5em; }
+.footer a { text-decoration: none; }
+.footer *:after {
+	content: "\00a0\2022\00a0"; /* ISO codes for */
+	color: black;
+}
+.footer :last-child:after { content: ""; }
+
+.right-side { float: right; }
+
+.see-also { float: left; }
+.see-also:after { content: ""; }
+.see-also a { text-decoration: none; }
+.see-also a:after { content: "," }
+.see-also a:last-of-type:after { content: "."; }
+
+/* Header Numbering */
+// Remember to add counter-reset for top-level header to body
+// Example: counter-reset: h2
+h2:before {
+	counter-reset: h3;
+	counter-increment: h2;
+	content: counter(h2) ". ";
+}
+h3:before {
+	counter-increment: h3;
+	content: counter(h2) "." counter(h3) ". ";
+}
+.no_toc:before {
+	content: "";
+}
+
+/* Table Of Contents Numbering */
+.tocReg {
+	counter-reset: TOC;
+	list-style-type: none;
+	ol {
+		@extend .tocReg;
+	}
+}
+.tocReg li:before {
+	counter-increment: TOC;
+	content: counters(TOC, ".") ". ";
+	font-weight: bold;
+}
+.tocReg ol li:before {
+	content: counters(TOC, ".") " ";
+}

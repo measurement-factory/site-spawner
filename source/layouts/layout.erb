@@ -1,0 +1,97 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<% title = current_page.parent ? " @ " + site_title : "" %>
+		<title><%= current_page.data.title + title if current_page.data.title %></title>
+		<%= stylesheet_link_tag "stylesheet" %>
+	</head>
+	<body>
+		<div class="gradient"></div>
+		<div class="main">
+			<div class="header">
+				<div class="imgHeader">
+					<a class="link" href="<%= parent_url %>" data-text="<%= parent_title %>"></a>
+					<div class="text">
+						<%= link_to site_title, '/index.html' if current_page.url != "/" %>
+						<%= site_title if current_page.url == "/" %>
+					</div>
+				</div>
+				<%= partial "navigation" %>
+			</div> <!-- /header -->
+			<div class="innerMain">
+				<h1 class="contentHeader"><%= current_page.data.title %></h1>
+				<div class="breadcrumbs"><%= breadcrumb %></div>
+				<%= yield %>
+				<!-- Search -->
+				<form method="get" action="http://www.google.com/search" class="search">
+					<input type="text" name="q" placeholder="Search..." class="textfield" />
+					<input type="submit" value="Search" class="button" />
+					<input type="radio" name="sitesearch" value="<%= search_scope %>" checked hidden />
+				</form>
+				<hr>
+				<div class="footer">
+					<% children = children(current_page) %>
+					<span class="see-also"><%= "See Also: " + children unless children.empty? %></span>
+					<span class="right-side">
+						<%= link_to 'Sitemap', '/sitemap.html' %>
+						<%= link_to 'Help', '/support/index.html' %>
+					</span>
+				</div> <!-- /footer -->
+			</div> <!-- /innerMain -->
+			<span class="copyright">&copy; <%= Time.new.year %> <a href="<%= parent_url %>"><%= parent_title %></a></span>
+		</div> <!-- /main -->
+	</body>
+	<script>
+	/*
+	  Script must execute after DOM model has been built. 
+	  Keep it after body. This script adds a hover class to the menu.
+	  
+	  Script does not support IE8 or lower, as they don't use the
+	  standard 'classList' object or the 'addEventListener' method.
+	  
+	  Can configure:
+	  - Wait time before closing.
+	  - Selector to add/remove the class to/from.
+	*/
+	var timeouts = new Array();
+	var elements = new Array();
+	function mouseOver(element) {
+		var timeoutsLength = timeouts.length;
+		for (var i=0;i<timeoutsLength;i++) {
+			clearTimeout(timeouts[i]);
+			elements[i].classList.remove('onHover');
+		}
+		timeouts = [];
+		elements = [];
+		element.classList.add('onHover');
+	};
+	function mouseOut(element) {
+		var menuElement = element,
+		timeoutId = setTimeout(function(){
+			menuElement.classList.remove('onHover');
+		}, 750);
+		timeouts.push(timeoutId);
+		elements.push(menuElement);
+	}
+	[].forEach.call( document.querySelectorAll('.nav li'), function(el) {
+		el.addEventListener('mouseover', function(){mouseOver(el)}, false);
+		el.addEventListener('mouseout',  function(){mouseOut(el) }, false);
+	});
+	</script>
+	<script>
+		/*
+			Add 'current' class to menu item that links to current page,
+			or head of current page.
+		*/
+		var firstLevel = window.location.pathname.split( '/' )[1];
+		[].forEach.call( document.querySelectorAll('.nav>ul>li>a'), function(el) {
+			var elHref = el.href.split('/')[3];
+			if (firstLevel == elHref) {
+				el.classList.add('current');
+			} else {
+				el.classList.remove('current');
+			}
+		});
+	</script>
+</html>
