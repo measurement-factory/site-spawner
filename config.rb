@@ -1,106 +1,4 @@
 ###
-# Helpers
-###
-
- #Methods defined in the helpers block are available in templates
- helpers do
-	def breadcrumb
-		page = current_page
-		crumbs = ""
-		if page.parent && page.parent.parent then 
-			while page.parent do
-				if crumbs.empty? then
-					crumbs = "<span>#{page.data.title}</span>"
-				else
-					crumbs = "<a href=\"#{page.url}\">#{page.data.title}</a> &raquo; #{crumbs}"
-				end
-				page = page.parent
-			end
-		end
-		return crumbs
-	end
-	def children(page)
-		childrenList = ""
-		if page.children.length > 0 then
-			children = page.children
-			children = children.sort_by{ |e| e.data.title.to_s rescue "" }
-			show = 5 # Use this to configure how many children are shown.
-			
-			children.each do |child|
-				if child.data.title then
-					also = "#{child.data.also}"
-					unless also == "true" || also == "false" || also.empty? then
-						raise SyntaxError, "also frontmatter variable must be either true/false in YAML format. Current also value: \"#{also}\""
-					end
-					if also == "false" then
-					else
-						if show != 0 then
-							childrenList << "<a href=\"#{child.url}\">#{child.data.title}</a>"
-							childrenList << "  "
-							show = show - 1
-						else
-							break
-						end
-					end
-				end
-			end
-		end
-		return childrenList
-	end
-	def sitemapGen
-		page = current_page.parent
-		while page.parent do
-			page = page.parent
-		end
-		list = getHTML(page)
-		return list
-	end
-	def getHTML(page)
-		html = ""
-		if page.children.length > 0 then
-			html << "<ul>\n"
-			children = page.children.sort_by{ |e| e.data.title.to_s rescue "" }
-			children.each do |page|
-				childHtml = getHTML(page)
-				next unless page.data.title
-				sitemap = "#{page.data.sitemap}"
-				sitemap = true if sitemap == "true"  || sitemap.empty?
-				sitemap = false if sitemap == "false"
-				if page.data.title && sitemap then
-					html << "<li>"
-						html << "<a href=\"#{page.url}\">#{page.data.title}</a>"
-						html << childHtml
-					html << "</li>\n"
-				end
-			end
-			html << "</ul>\n"
-		end
-		return html
-	end
-	def include(filename)
-		if !filename.start_with?('/') then
-			dirname = File.dirname(current_page.path)
-			filename = "#{:source}/#{dirname}/#{filename}"
-		end
-		file = File.new(filename, "r")
-		# Initialize content string.
-		content = ""
-		# Get file contents.
-		while (line = file.gets)
-			content << line
-		end
-		file.close
-		return content
-	end
- end
-
-###
-# User Variables
-##
-require 'site.rb'
-activate :UserVariables
-
-###
 # Middleman
 ###
 
@@ -116,7 +14,7 @@ activate :directory_indexes
 #activate :minify_html
 
 # Activate LiveReload - more info in gemfile
-#activate :livereload
+# activate :livereload
 
 set :sass, :style => :expanded, :line_comments => false
 
@@ -143,3 +41,30 @@ configure :build do
 	# Or use a different image path
 	#set :http_path, "images/"
 end
+
+###
+# User Variables
+###
+# Used to limit Google search to this site.
+set :search_scope, 'site.example.com'
+
+# Displayed in top-left corner of the page, in the header.
+set :site_title, 'Example Site'
+
+# Points to parent organization of this site.
+# must start with http:// or https://
+set :parent_url, 'http://master.example.com'
+
+# Text used to render parent_url (set above) and copyright. 
+set :parent_title, 'Master Site'
+
+# Location of sitemap file. '/' is relative to source directory.
+set :sitemapDest, '/sitemap.html'
+
+# Minify Javascript, boolean
+set :minifyJavascript, true
+
+###
+# Layout
+###
+activate :LayoutGenerator
