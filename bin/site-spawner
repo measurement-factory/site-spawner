@@ -1,0 +1,138 @@
+#!/usr/bin/env ruby
+
+require 'pathname'
+
+class String
+  def unindent 
+    gsub(/^#{scan(/^\s*/).min_by{|l|l.length}}/, "")
+  end
+end
+
+$force = false
+ARGV.each do |a|
+	if a == ('--force' || '-f') then
+		$force = true
+	end
+	if a == ('--help' || '-h') then
+		puts 'View documentation online at:'
+		puts 'https://github.com/measurement-factory/site-spawner'
+	end
+end
+
+def inMiddleman(path = "")
+	if path == '' then
+		path = Pathname.new(Dir.pwd)
+	end
+	configPath = path + 'config.rb'
+	if configPath.exist? then
+		Dir.chdir(path)
+		return path.to_s
+	end
+	return false if path.root?
+	inMiddleman(path.parent)
+end
+
+def refreshFile(dir, filename)
+	fileLoc = "#{dir}#{filename}"
+	filePath = (Pathname.new(dir) + filename)
+
+	if !File.directory?(dir)
+		Dir::mkdir(dir)
+	end
+	
+	if !filePath.exist? || $force then
+		puts "Creating #{filename} in '#{dir}'."
+		return File.new(fileLoc, "a") # Paranoid: Append to avoid overwriting.
+	else
+		puts "File #{fileLoc} already exists."
+		puts "To overwrite, call with --force option."
+		return nil
+	end
+end
+
+def refreshStylesheet(dir = "")
+	file = refreshFile(dir, "stylesheet.scss")
+	if file then
+		file.puts('// Import site-spawner gem stylesheets.')
+		file.puts("@import \"site-spawner\";")
+		file.close
+	end
+end
+
+def refreshLayout(dir = "")
+	file = refreshFile(dir, "layout.erb")
+	if file then
+		file.puts('<%= layoutGen.generateBefore() %>')
+		file.puts("<%= yield %>")
+		file.puts("<%= layoutGen.generateAfter() %>")
+		file.close
+	end
+end
+
+def createIndex(dir = "")
+	filename = 'index.md'
+	fileLoc = "#{dir}#{filename}"
+	filePath = (Pathname.new(dir) + filename)
+	
+	if !filePath.exist? then
+		file = File.new(fileLoc, 'a')
+		file.puts '---'
+		file.puts 'title: Site Spawner Default Home Page'
+		file.puts '---'
+		file.puts "Edit #{filename} to change this page. The menu and sitemap will appear as you add files."
+		file.puts "Documentation is available [elsewhere](https://github.com/measurement-factory/site-spawner/wiki)."
+		file.close
+	end
+end
+
+def appendConfig(dir = "")
+	filename = "config.rb"
+	fileLoc = "#{dir}#{filename}"
+	
+	if File.readlines(fileLoc).grep(/activate :SiteSpawner/).size > 0 then
+	else
+		file = File.new(fileLoc, "a")
+		puts "Appending to #{filename} in '#{dir}'."
+		str = <<-STR.unindent
+		
+		###
+		# User Variables
+		###
+		# Used to limit Google search to this site.
+		set :search_scope, 'site.example.com'
+		
+		# Displayed in top-left corner of the page, in the header.
+		set :site_title, 'Example Site'
+		
+		# Points to parent organization of this site.
+		# must start with http:// or https://
+		set :parent_url, 'http://master.example.com'
+		
+		# Text used to render parent_url (set above) and copyright. 
+		set :parent_title, 'Master Site'
+
+		# Location of sitemap file. '/' is relative to source directory.
+		set :sitemapDest, '/sitemap.html'
+		
+		# Set to false to disable javascript minification.
+		set :minifyJavascript, false
+		
+		###
+		# Site-Spawner Gem Activation
+		###
+		activate :SiteSpawner
+		STR
+		file.puts(str)
+		file.close
+	end
+end
+
+if inMiddleman() then
+	path = inMiddleman()
+	refreshStylesheet("#{path}/source/stylesheets/")
+	refreshLayout("#{path}/source/layouts/")
+	createIndex("#{path}/source/")
+	appendConfig("#{path}/")
+else
+	puts 'Error: Not in middleman directory!'
+end

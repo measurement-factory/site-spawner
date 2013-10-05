@@ -1,0 +1,42 @@
+$siteTitleColor  : red;
+$siteTitleSize   : 2rem;
+$pageHeaderColor : #194096;
+$bodyTextColor   : #2F5783;
+$innerMainBG     : #FFF4E3;
+$innerFontSize   : 1em;
+$contentWidth    : 75%;
+$contentMinWidth : 700px;
+$border-radius   : 5px;
+$indentWidth     : 0.5em;
+
+// Table Var
+$tableBG         : transparent;
+
+// Code Variable Declaration
+$codeBackground  : #FFE1B3;
+$codeFontSize    : 1em;
+
+// Gradient
+$toColor         : #a6aac4;
+$fromColor       : white;
+
+// Menu styling
+$header-background: #2F5783;
+$menuHoverColor: #EEA251;
+$menuDefaultColor: white;
+$menuBorderColor: #8080FF;
+$menuBorderWidth: 1px;
+$menuItemPadding: 0.5em;
+
+$experimental-support-for-svg: true;
+
+@function strip-units($number) {
+	@return $number / ($number * 0 + 1);
+}
+
+@function set-unit($number, $unit) {
+	$number: strip-units($number);
+	@return #{$number}#{$unit};
+}
+
+@import "compass/css3/images"; // linear-gradient and image size getters
