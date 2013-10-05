@@ -54,7 +54,7 @@ module SiteSpawner
 										#{app.site_title if current_page.url == "/"}
 									</div>
 								</div>
-								#{ sitemapGen() }
+								#{ navigationGen() }
 							</div> <!-- /header -->
 							<div class="innerMain">
 								<h1 class="contentHeader">#{current_page.data.title}</h1>
@@ -171,6 +171,10 @@ module SiteSpawner
 				list = getSitemapHtml(page)
 				list = "<div class=\"nav\">#{list}</div>"
 				return list
+			end
+			
+			def navigationGen()
+				sitemapGen() 
 			end
 			
 			def getSitemapHtml(page)
