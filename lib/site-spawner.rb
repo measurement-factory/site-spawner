@@ -136,12 +136,12 @@ module SiteSpawner
 					var elements = [];
 					function mouseOver(element) {
 						element.classList.add('onHover');
-						for (var i=0, len = myArray.length; i < len; i++) {
+						for (var i=0, len = timeouts.length; i < len; i++) {
 							clearTimeout(timeouts[i]);
 							elements[i].classList.remove('onHover');
 						}
-						timeouts.length = 0; // Empty all instances of Array
-						elements.length = 0;
+						timeouts = []; // Empty all instances of Array
+						elements = [];
 					};
 					function mouseOut(element) {
 						var menuElement = element,
