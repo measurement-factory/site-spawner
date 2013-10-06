@@ -1,18 +1,21 @@
+// General
+$innerMainBG     : #FFF4E3;
+$innerFontSize   : 1em;
+$indentWidth     : 0.5em;
+$contentWidth    : 75%;
+$contentMinWidth : 700px;
+$bodyTextColor   : #2F5783;
+
+$border-radius   : 5px;
+
 $siteTitleColor  : red;
 $siteTitleSize   : 2rem;
 $pageHeaderColor : #194096;
-$bodyTextColor   : #2F5783;
-$innerMainBG     : #FFF4E3;
-$innerFontSize   : 1em;
-$contentWidth    : 75%;
-$contentMinWidth : 700px;
-$border-radius   : 5px;
-$indentWidth     : 0.5em;
 
-// Table Var
+// Table
 $tableBG         : transparent;
 
-// Code Variable Declaration
+// Code Block Variable Declaration
 $codeBackground  : #FFE1B3;
 $codeFontSize    : 1em;
 
@@ -28,8 +31,6 @@ $menuBorderColor: #8080FF;
 $menuBorderWidth: 1px;
 $menuItemPadding: 0.5em;
 
-$experimental-support-for-svg: true;
-
 @function strip-units($number) {
 	@return $number / ($number * 0 + 1);
 }
@@ -39,4 +40,6 @@ $experimental-support-for-svg: true;
 	@return #{$number}#{$unit};
 }
 
+// Compass Configuration
+$experimental-support-for-svg: true;
 @import "compass/css3/images"; // linear-gradient and image size getters
