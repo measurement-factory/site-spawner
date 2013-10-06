@@ -169,12 +169,11 @@ module SiteSpawner
 					page = page.parent
 				end
 				list = getSitemapHtml(page)
-				list = "<div class=\"nav\">#{list}</div>"
 				return list
 			end
 			
 			def navigationGen()
-				sitemapGen() 
+				return "<div class=\"nav\">#{ sitemapGen() }</div>"
 			end
 			
 			def getSitemapHtml(page)
