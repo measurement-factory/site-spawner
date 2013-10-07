@@ -31,15 +31,6 @@ $menuBorderColor: #8080FF;
 $menuBorderWidth: 1px;
 $menuItemPadding: 0.5em;
 
-@function strip-units($number) {
-	@return $number / ($number * 0 + 1);
-}
-
-@function set-unit($number, $unit) {
-	$number: strip-units($number);
-	@return #{$number}#{$unit};
-}
-
 // Compass Configuration
 $experimental-support-for-svg: true;
 @import "compass/css3/images"; // linear-gradient and image size getters
