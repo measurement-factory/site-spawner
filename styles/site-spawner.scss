@@ -6,12 +6,12 @@ body {
 	margin: 0;
 	padding: 0;
 	font-family: Arial, Helvetica, sans-serif;
-	// Reset Counters
+	// Reset automatic header numbering
 	counter-reset: h2 h3;
 }
-/*div*/.header {
+.header {
 	box-shadow: 0 0 20px black;
-	border-radius: 5px;
+	border-radius: $border-radius;
 	position: relative;
 	z-index: 15;
 }
@@ -22,10 +22,10 @@ body {
 	height: $headerImageHeight;
 	background-color: $header-background;
 	background-repeat: no-repeat;
-	border-radius: 5px 5px 0 0;
+	border-radius: $border-radius $border-radius 0 0;
 	.link {
 		float: left;
-		border-radius: 5px 0 0;
+		border-radius: $border-radius 0 0;
 		// XXX Restore background-image: image-url("header.jpeg");
 		height: $headerImageHeight;
 		width: $headerImageWidth;
