@@ -1,8 +1,12 @@
 @import "variables";
 @import "menu";
 
+// Compass Configuration
+$experimental-support-for-svg: true;
+//@import "compass/css3/images"; // image size getters - not currently used.
+
 body {
-	color: $bodyTextColor;
+	color: $content-color;
 	margin: 0;
 	padding: 0;
 	font-family: Arial, Helvetica, sans-serif;
@@ -34,7 +38,7 @@ body {
 			bottom: 0;
 			left: 0;
 			content: attr(data-text);
-			color: $siteTitleColor;
+			color: $header-color;
 			font-size: 1em;
 			padding: 0 0.5em;
 			text-decoration: none;
@@ -43,8 +47,8 @@ body {
 	%text-style {
 		text-decoration: none;
 		font-weight: bold;
-		font-size: $siteTitleSize;
-		color: $siteTitleColor;
+		font-size: $header-fontsize;
+		color: $header-color;
 	}
 	.text {
 		float: right;
@@ -57,8 +61,8 @@ body {
 	}
 }
 .wrapper {
-	width: $contentWidth;
-	min-width: $contentMinWidth;
+	width: $content-width;
+	min-width: $content-minWidth;
 	margin: 0 auto;
 	margin-bottom: 90%;
 	padding-top: 1em;
@@ -71,43 +75,44 @@ body {
 	z-index: -1;
 	width: 100%;
 	height: 100%;
-	background-color: $toColor; // Fallback for browsers that do not support CSS3 gradients
+	background-color: $gradient-toColor; // Fallback for browsers that do not support CSS3 gradients
 
 	$line-gradient: repeating-linear-gradient(-45deg, rgba(0,0,255,0.1), transparent 1px, transparent 2px);
-	$gradient: linear-gradient(top, $fromColor, $toColor 30%);
+	$gradient: linear-gradient(top, $gradient-fromColor, $gradient-toColor 30%);
 
 	background-image: prefix(-owg, $gradient);                  // Old Webkit
 	background-image: prefix(-webkit, $gradient);               // WebKit
+	background-image: prefix(-svg, $gradient);					// SVG
 	background-image: prefix(-moz, $line-gradient, $gradient);  // Firefox
-	background-image: prefix(-o, $line-gradient, $gradient);    // Opera
+	background-image: prefix(-o,   $line-gradient, $gradient);  // Opera
 	background-image: $gradient;                                // W3C Spec
 }
 .innerMain {
 	position: relative;
 	text-align: left;
-	margin: 0 $indentWidth;
+	margin: 0 $content-indentWidth;
 	padding: 1em;
-	background: $innerMainBG;
+	background: $content-background;
 	box-shadow: 0 0 9px rgba(0,0,0,1);
 	border-radius: 0 0 $border-radius $border-radius;
-	font-size: $innerFontSize;
+	font-size: $content-fontsize;
 }
 .contentHeader {
 	margin: 0; // remove user-agent css
-	color: $pageHeaderColor;
+	color: $content-titleColor;
 }
 .copyright {
 	float: right;
 	color: white;
-	margin-right: $indentWidth;
+	margin-right: $content-indentWidth;
 	padding-top: 0.3em;
 	a { text-decoration: none; color: white; }
 }
 .codeblock {
 	margin: 2em 4em;
 	padding: 0.5em;
-	background-color: $codeBackground;
-	font-size: $codeFontSize;
+	background-color: $code-background;
+	font-size: $code-fontsize;
 	overflow-x: auto;
 }
 .section1>p, .section1>img, .section1>table, .section1>pre, .section1>h3 {
@@ -120,7 +125,7 @@ body {
 	margin-left: 3em;
 }
 table {
-	background-color: $tableBG;
+	background-color: $table-background;
 	padding: 1em;
 	border-collapse: collapse;
 	a {

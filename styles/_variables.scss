@@ -1,36 +1,34 @@
-// General
-$innerMainBG     : #FFF4E3;
-$innerFontSize   : 1em;
-$indentWidth     : 0.5em;
-$contentWidth    : 75%;
-$contentMinWidth : 700px;
-$bodyTextColor   : #2F5783;
-
+// General 
 $border-radius   : 5px;
 
-$siteTitleColor  : red;
-$siteTitleSize   : 2rem;
-$pageHeaderColor : #194096;
+// Content
+$content-background : #FFF4E3;
+$content-indentWidth: 0.5em;
+$content-width      : 75%;
+$content-minWidth   : 700px;
+$content-color      : #2F5783;
+$content-titleColor : #194096;
+$content-fontsize   : 1em;
+
+// Header
+$header-color     : red;
+$header-fontsize  : 2rem;
+$header-background: #2F5783;
 
 // Table
-$tableBG         : transparent;
+$table-background: transparent;
 
-// Code Block Variable Declaration
-$codeBackground  : #FFE1B3;
-$codeFontSize    : 1em;
+// Code Block
+$code-background  : #FFE1B3;
+$code-fontsize    : 1em;
 
 // Gradient
-$toColor         : #a6aac4;
-$fromColor       : white;
+$gradient-toColor         : #a6aac4;
+$gradient-fromColor       : white;
 
 // Menu styling
-$header-background: #2F5783;
-$menuHoverColor: #EEA251;
-$menuDefaultColor: white;
-$menuBorderColor: #8080FF;
-$menuBorderWidth: 1px;
-$menuItemPadding: 0.5em;
-
-// Compass Configuration
-$experimental-support-for-svg: true;
-@import "compass/css3/images"; // linear-gradient and image size getters
+$menu-color       : white;
+$menu-color-hover : #EEA251;
+$menu-border-color: #8080FF;
+$menu-border-width: 1px;
+$menu-item-padding: 0.5em;
