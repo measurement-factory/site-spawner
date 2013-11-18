@@ -173,9 +173,32 @@ module SiteSpawner
 			end
 			
 			def navigationGen()
-				return "<div class=\"nav\">#{ sitemapGen() }</div>"
+				return "<div class=\"nav\">#{ menuGen() }</div>"
 			end
-			
+
+			def menuGen()
+				return app.Menu
+			end
+
+			# Generate one level of menu tree
+			def menu(children)
+				return '' if children.empty?
+				html = '<ul>'
+				children.each do |child|
+					html << child
+				end
+				html << "</ul>"
+				return html
+			end
+
+			# Generate one menu item with optional sub-items
+			def menuItem(content, children = nil)
+				html = "<li>#{content}"
+				html << menu(children)
+				html << '</li>'
+				return html
+			end
+
 			def getSitemapHtml(page)
 				html = ""
 				if page.children.length > 0 then
@@ -253,20 +276,26 @@ module SiteSpawner
 				js = Uglifier.new.compile(js) if app.minifyJavascript
 				return js
 			end
-			
-		end
-		# Middleman Helpers
-		helpers do
-			def include(filename)
-				if !filename.start_with?('/') then
-					dirname = File.dirname(current_page.path)
-					filename = "#{:source}/#{dirname}/#{filename}"
+
+			# Middleman Helpers
+			app.helpers do
+				def include(filename)
+					if !filename.start_with?('/') then
+						dirname = File.dirname(current_page.path)
+						filename = "#{:source}/#{dirname}/#{filename}"
+					end
+					file = File.open(filename, "r")
+					# Read whole file into content variable
+					content = file.read
+					file.close
+					return content
 				end
-				file = File.open(filename, "r")
-				# Read whole file into content variable
-				content = file.read
-				file.close
-				return content
+				def menuItem(parent, *children)
+					layoutGen.menuItem(parent, children)
+				end
+				def menu(*children)
+					layoutGen.menu(children)
+				end
 			end
 		end
 	end
