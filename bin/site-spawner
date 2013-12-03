@@ -79,7 +79,7 @@ def createIndex(dir = "")
 		file.puts '---'
 		file.puts 'title: Site Spawner Default Home Page'
 		file.puts '---'
-		file.puts "Edit #{filename} to change this page. The menu and sitemap will appear as you add files."
+		file.puts "Edit source/#{filename} to change this page. The menu and sitemap will appear as you add files."
 		file.puts "Documentation is available [elsewhere](https://github.com/measurement-factory/site-spawner/wiki)."
 		file.close
 	end
