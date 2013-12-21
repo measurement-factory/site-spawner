@@ -1,0 +1,242 @@
+$inner-color: #FFF4E3;
+$header-bgcolor: #2F5783;
+$content-titleColor : #194096;
+
+* { box-sizing: border-box; }
+
+body {
+	display: table-cell; // Make body expand to fit content
+	padding: 0;
+	margin: 0;
+	font-size: 16px;
+	background-color: $inner-color;
+	font-family: Arial;
+	counter-reset: h2 h3;
+}
+
+header {
+	width: 100%;
+	background-color: lighten($header-bgcolor, 50%);
+	p {
+		display: table-cell;
+		margin: 0;
+		padding: 0.33em 0.5em;
+		font-size: 0.8em;
+		a {
+			text-decoration: none;
+		}
+	}
+}
+
+.bar {
+	$border-color: darken($inner-color, 50%);
+	$break-size: 730px;
+
+	display: table;
+	background-color: $header-bgcolor;
+	position: relative;
+	height: 100%;
+	width: 100%;
+	
+	%common-styles {
+		@media screen and (max-width: $break-size) {
+			display: block;
+			text-align: center;
+
+			border-bottom: $border-color solid 1px;
+		}
+		@media screen and (min-width: $break-size) {
+			display: table-cell;
+			border-right: $border-color solid 1px;
+		}
+
+		padding: 0.33em 0.5em;
+		font-size: 1.5em;
+		vertical-align: middle;
+		color: lighten($header-bgcolor, 50%);
+		text-decoration: none;
+	}
+
+	a {
+		@extend %common-styles;
+		
+		&:last-of-type {
+			border-right: none;
+			border-bottom: none;
+		}
+		&:first-of-type {
+			border-right-width: 2px;
+			border-bottom-width: 2px;
+			white-space: nowrap;
+		}
+		&:hover {
+			color: darken($inner-color, 20%);
+		}
+	}
+
+	form {
+		@media screen and (max-width: $break-size) {
+			display: block;
+			padding-bottom: 0.33em;
+			text-align: center;
+		}
+		@media screen and (min-width: $break-size) {
+			display: table-cell;
+			vertical-align: middle;
+			width: 100%;
+		}
+
+		text-align: right;
+		white-space: nowrap;
+		padding-right: 0.5em;
+		input {
+			&[type="search"] {
+				width: 20em;
+			}
+		}
+	}
+}
+
+.content {
+	padding: 0 2em;
+}
+
+footer {
+	display: table;
+	padding: 0.5em 0.5em;
+	width: 100%;
+	background-color: lighten($header-bgcolor, 50%);
+
+	.see-also {
+		display: table-cell;
+		vertical-align: middle;
+	}
+	.right-side {
+		display: table-cell;
+		text-align: right;
+	}
+}
+
+.box {
+	display: inline-table;
+	background-color: $header-bgcolor;
+	border-radius: 2em;
+	padding: 0 2em;
+	width: 20em;
+
+	color: black;
+	text-decoration: none;
+	margin: 1em;
+	
+	.title {
+		text-align: center;
+		font-size: 2em;
+	}
+	.description {
+		text-align: center;
+	}
+}
+
+.codeblock {
+	margin: 2em 4em;
+	padding: 0.5em;
+	background-color: #FFE1B3;
+	font-size: 1em;
+	overflow-x: auto;
+}
+
+.toc {
+	border: 1px solid black;
+	float: left;
+	padding: 1em;
+	margin: 2em;
+	padding-left: 0;
+	padding-top: 0;
+	width: 20em;
+
+	margin-top: 0;
+
+	h3 { text-align: center; }
+}
+
+.tocList li {
+	list-style: none;
+	display: inline-block;
+}
+.tocList li:after {
+	content: ","
+}
+.tocList li:last-child:after {
+	content: "";
+}
+
+/* Table Of Contents Numbering */
+.tocReg {
+	counter-reset: TOC;
+	list-style-type: none;
+	ol {
+		@extend .tocReg;
+	}
+}
+.tocReg li:before {
+	counter-increment: TOC;
+	content: counters(TOC, ".") ". ";
+	font-weight: bold;
+}
+.tocReg ol li:before {
+	content: counters(TOC, ".") " ";
+}
+
+/* Header Numbering */
+// Remember to add counter-reset for top-level header to body
+// Example: counter-reset: h2
+h2:before {
+	counter-reset: h3;
+	counter-increment: h2;
+	content: counter(h2) ". ";
+}
+h3:before {
+	counter-increment: h3;
+	content: counter(h2) "." counter(h3) ". ";
+}
+.no_toc:before, .no_number:before {
+	content: "";
+}
+
+@for $i from 1 through 3{
+	.section#{$i} {
+		padding-left: #{$i}em;
+		h1,h2,h3,h4,h5,h6 {
+			margin-left: -#{$i}em;
+		}
+	}
+}
+
+table {
+	background-color: transparent;
+	padding: 1em;
+	border-collapse: collapse;
+	a {
+		color: blue;
+		text-decoration: none;
+	}
+}
+th,td {
+	padding: 0.05em 0.5em;
+}
+.table {
+	border: 1px solid black;
+}
+
+
+
+/* Breadcrumbs */
+.breadcrumbs { padding-top: 0.5em; }
+.breadcrumbs a { text-decoration: none; }
+.breadcrumbs *:last-child { font-weight: bold; }
+
+// Utility
+.hidden { visibility: hidden; height: 0; width: 0; margin: 0; padding: 0; }
+.center { text-align: center; margin: 0 auto; }
+.small  { font-size: small; font-family: monospace; }
+

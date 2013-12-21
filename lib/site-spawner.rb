@@ -42,24 +42,29 @@ module SiteSpawner
 				current_page = app.current_page
 				layout = ""
 				layout << generateHead()
+
+				# TODO: app.site_title needs to have all spaces replaced with &nbsp;
+				# Otherwise it has to be selected to be white-space: nowrap;
+
 				layout << <<-ERB.unindent
 					<body>
-						<div class="gradient"></div>
-						<div class="wrapper">
-							<div class="header">
-								<div class="imgHeader">
-									<a class="link" href="#{app.parent_url}" data-text="#{app.parent_title}"></a>
-									<div class="text">
-										#{app.link_to app.site_title, '/index.html' if current_page.url != "/"}
-										#{app.site_title if current_page.url == "/"}
-									</div>
-								</div>
+						<header>
+							<p>made at <a href="#{app.parent_url}">#{app.parent_title}</a></p>
+							<div class="bar">
+								#{app.link_to app.site_title, '/index.html'}
 								#{ navigationGen() }
-							</div> <!-- /header -->
-							<div class="innerMain">
-								<h1 class="contentHeader">#{current_page.data.title}</h1>
+								<form method="get" action="http://www.google.com/search" class="search">
+									<input type="search" name="q" placeholder="Search this site..." class="textfield" />
+									<input type="submit" value="Search" class="button" />
+									<input type="radio" name="sitesearch" value="web-polygraph.org" checked hidden class="hidden" />
+								</form>
+							</div>
+						</header>
+						<div class="content">
+							#{ breadcrumbs() }
+							<h1 class="contentHeader no_toc">#{current_page.data.title}</h1>
+							#{ tocGen() }
 				ERB
-				layout << breadcrumbs()
 				return layout
 			end
 			
@@ -73,25 +78,19 @@ module SiteSpawner
 				# XXX : For some unknown reason, find_resource_by_destination_path does not find sitemapDest
 				sitemapLink = '' unless app.sitemap.find_resource_by_path(sitemapDest)
 				layout = <<-ERB
-									<!-- Search -->
-									<form method="get" action="http://www.google.com/search" class="search">
-										<input type="text" name="q" placeholder="Search..." class="textfield" />
-										<input type="submit" value="Search" class="button" />
-										<input type="radio" name="sitesearch" value="#{app.search_scope}" checked hidden class="hidden" />
-									</form>
-									<hr>
-									<div class="footer">
-										<span class="see-also">#{"See Also: " + childrenHtml unless childrenHtml.empty?}</span>
-										<span class="right-side">
-											#{sitemapLink}
-											#{app.link_to 'Help', '/support/index.html'}
-										</span>
-									</div> <!-- /footer -->
-								</div> <!-- /innerMain -->
-								<span class="copyright">&copy; #{Time.new.year} <a href="#{app.parent_url}">#{app.parent_title}</a></span>
-							</div> <!-- /main -->
-							<script>#{generateMenuHoverScript(750)}</script>
-							<script>#{generateMenuCurrentScript()}</script>
+							</div>
+							<footer>
+								<span class="see-also">
+									#{"See Also:&nbsp;" + childrenHtml unless childrenHtml.empty?}
+								</span>
+								
+								<span class="right-side">
+									#{sitemapLink} &bull;
+									#{app.link_to 'Help', '/support/index.html'}
+									<br>
+									&copy; #{Time.new.year} <a href="#{app.parent_url}">#{app.parent_title}</a>
+								</span>
+							</footer>
 						</body>
 					</html>
 				ERB
@@ -160,6 +159,12 @@ module SiteSpawner
 				return js
 			end
 			
+			def tocGen()
+				sitemapHtml = getSitemapHtml(app.current_page);
+				html = "<section class=\"toc\"><h3 class='no_number'>Sitemap</h3>#{sitemapHtml}</section>"
+				return html if !sitemapHtml.empty?
+			end
+
 			
 			# Helpers
 			def sitemapGen()
@@ -173,7 +178,7 @@ module SiteSpawner
 			end
 			
 			def navigationGen()
-				return "<div class=\"nav\">#{ menuGen() }</div>"
+				return menuGen()
 			end
 
 			def menuGen()
@@ -182,20 +187,10 @@ module SiteSpawner
 
 			# Generate one level of menu tree
 			def menu(children)
-				return '' if children.empty?
-				html = '<ul>'
+				html = ''
 				children.each do |child|
 					html << child
 				end
-				html << "</ul>"
-				return html
-			end
-
-			# Generate one menu item with optional sub-items
-			def menuItem(content, children = nil)
-				html = "<li>#{content}"
-				html << menu(children)
-				html << '</li>'
 				return html
 			end
 
@@ -248,12 +243,14 @@ module SiteSpawner
 				children = page.children
 					
 				# Sort children by title
-				children = children.sort_by{ |child| child.data.title.to_s rescue "" }
-				
-				# Take amount of children specified in 'show' variable.
-				children = children.take(showAmount)
+				children = children.sort_by{ |child| child.data.title.to_s }
+
+				taken = 0
 				
 				children.each do |child|
+					if taken >= showAmount then
+						break
+					end
 					if child.data.title then
 						alsoStr = "#{child.data.also}"
 						if (alsoStr.empty? || alsoStr == 'true' || alsoStr == 'false') then
@@ -261,6 +258,7 @@ module SiteSpawner
 							if also then
 								childrenList << ', ' if !childrenList.empty? # Seperator
 								childrenList << app.link_to(child.data.title, child.url)
+								taken = taken + 1
 							end
 						else
 							raise SyntaxError, "#{child.path}: Expected a boolean value for 'also' frontmatter variable, got '#{alsoStr}'"
@@ -269,6 +267,7 @@ module SiteSpawner
 				end
 				childrenList << "." if !childrenList.empty?  # period at end
 				return childrenList
+				# return children.to_s
 			end
 			
 			# Rendering Helpers
@@ -289,9 +288,6 @@ module SiteSpawner
 					content = file.read
 					file.close
 					return content
-				end
-				def menuItem(parent, *children)
-					layoutGen.menuItem(parent, children)
 				end
 				def menu(*children)
 					layoutGen.menu(children)
