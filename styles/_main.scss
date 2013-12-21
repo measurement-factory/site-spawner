@@ -125,7 +125,7 @@ footer {
 	padding: 0 2em;
 	width: 20em;
 
-	color: black;
+	color: lighten($header-bgcolor, 50%);
 	text-decoration: none;
 	margin: 1em;
 	
@@ -136,7 +136,7 @@ footer {
 	}
 	p {
 		text-align: center;
-		color: lighten($header-bgcolor, 50%);
+		// color: lighten($header-bgcolor, 50%);
 	}
 }
 
