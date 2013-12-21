@@ -293,11 +293,11 @@ module SiteSpawner
 				end
 				def roadpostOpen(link)
 					link = url_for(link)
-					return "{::nomarkdown}<a href='#{ link }' class='roadpost'>{:/}"
+					return "{::nomarkdown}</p><a href=\"#{ link }\" class=\"roadpost\"><p>{:/}"
 				end
 
 				def roadpostClose()
-					return '{::nomarkdown}</a>{:/}'
+					return '{::nomarkdown}</p></a>{:/}'
 				end
 			end
 		end
