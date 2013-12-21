@@ -297,7 +297,7 @@ module SiteSpawner
 				end
 
 				def roadpostClose()
-					return '{::nomarkdown}</p></a>{:/}'
+					return '{::nomarkdown}</p></a><p>{:/}'
 				end
 			end
 		end
