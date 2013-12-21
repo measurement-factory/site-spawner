@@ -291,13 +291,22 @@ module SiteSpawner
 				def menu(*children)
 					layoutGen.menu(children)
 				end
-				def roadpostOpen(link)
-					link = url_for(link)
-					return "{::nomarkdown}</p><a href=\"#{ link }\" class=\"roadpost\"><p>{:/}"
-				end
+				def roadpost(*args, &block)
+					isMarkdown = current_page.source_file.include?('.md.')
+					link = url_for(args[0])
 
-				def roadpostClose()
-					return '{::nomarkdown}</p></a><p>{:/}'
+					html = Tilt['markdown'].new { capture(*args, &block) }.render
+					output = "<a href=\"#{ link }\" class=\"roadpost\">"
+					output << html
+					output << "</a>"
+
+
+					# Prevent markdown from re-rendering its own output.
+					if isMarkdown then
+						output = "{::nomarkdown}\n" + output + "\n{:/nomarkdown}"
+					end
+
+					concat output
 				end
 			end
 		end
