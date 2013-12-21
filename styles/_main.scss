@@ -117,7 +117,7 @@ footer {
 	}
 }
 
-.box {
+.roadpost {
 	display: inline-table;
 	background-color: $header-bgcolor;
 	border-radius: 2em;
@@ -128,12 +128,14 @@ footer {
 	text-decoration: none;
 	margin: 1em;
 	
-	.title {
+	h1,h2,h3,h4,h5,h6 {
 		text-align: center;
 		font-size: 2em;
+		color: darken($inner-color, 50%);
 	}
-	.description {
+	p {
 		text-align: center;
+		color: lighten($header-bgcolor, 50%);
 	}
 }
 
