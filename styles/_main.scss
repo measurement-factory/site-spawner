@@ -5,6 +5,7 @@ $content-titleColor : #194096;
 * { box-sizing: border-box; }
 
 body {
+	width: 100%;
 	display: table-cell; // Make body expand to fit content
 	padding: 0;
 	margin: 0;
@@ -65,8 +66,8 @@ header {
 			border-bottom: none;
 		}
 		&:first-of-type {
-			border-right-width: 2px;
-			border-bottom-width: 2px;
+			border-right-width: 3px;
+			border-bottom-width: 3px;
 			white-space: nowrap;
 		}
 		&:hover {
