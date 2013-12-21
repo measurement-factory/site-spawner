@@ -267,7 +267,6 @@ module SiteSpawner
 				end
 				childrenList << "." if !childrenList.empty?  # period at end
 				return childrenList
-				# return children.to_s
 			end
 			
 			# Rendering Helpers
@@ -291,6 +290,14 @@ module SiteSpawner
 				end
 				def menu(*children)
 					layoutGen.menu(children)
+				end
+				def roadpostOpen(link)
+					link = url_for(link)
+					return "{::nomarkdown}<a href='#{ link }' class='roadpost'>{:/}"
+				end
+
+				def roadpostClose()
+					return '{::nomarkdown}</a>{:/}'
 				end
 			end
 		end
