@@ -314,16 +314,34 @@ module SiteSpawner
 
 					concat output
 				end
-				def csvToRows(file)
-					file = :source.to_s + file
+				def csvToRows(file, regex=nil)
+					resource = sitemap.find_resource_by_path(file)
+					path = resource.source_file
 					table = ''
-					CSV.foreach(file) do |row|
+
+					lines = CSV.read(path)
+
+					if lines.length == 0 then
+						raise "Empty CSV file: #{file}"
+					end
+					
+					lines.each do |row|
+						if regex != nil then
+							if row[0] !~ %r@#{regex}@ then
+								next
+							end
+						end
 						row.each do |cell|
 							table << "|#{cell}"
 						end
 						table << "|"
 						table << "\n"
 					end
+
+					if table.empty? then
+						raise "No #{file} rows match regex: #{regex}"
+					end
+
 					return table
 				end
 			end
