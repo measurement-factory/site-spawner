@@ -308,6 +308,18 @@ module SiteSpawner
 
 					concat output
 				end
+				def csvToRows(file)
+					file = :source.to_s + file
+					table = ''
+					CSV.foreach(file) do |row|
+						row.each do |cell|
+							table << "|#{cell}"
+						end
+						table << "|"
+						table << "\n"
+					end
+					return table
+				end
 			end
 		end
 	end
