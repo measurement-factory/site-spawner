@@ -1,6 +1,6 @@
 $inner-color: #FFF4E3;
 $header-bgcolor: #2F5783;
-$content-titleColor : #194096;
+$header-border-color: darken($inner-color, 50%);
 
 * { box-sizing: border-box; }
 
@@ -30,7 +30,6 @@ header {
 }
 
 .bar {
-	$border-color: darken($inner-color, 50%);
 	$break-size: 730px;
 
 	display: table;
@@ -44,11 +43,11 @@ header {
 			display: block;
 			text-align: center;
 
-			border-bottom: $border-color solid 1px;
+			border-bottom: $header-border-color solid 1px;
 		}
 		@media screen and (min-width: $break-size) {
 			display: table-cell;
-			border-right: $border-color solid 1px;
+			border-right: $header-border-color solid 1px;
 		}
 
 		padding: 0.33em 0.5em;
@@ -100,6 +99,10 @@ header {
 
 .content {
 	padding: 0 2em;
+}
+
+h1 {
+	color: $header-bgcolor;
 }
 
 footer {
