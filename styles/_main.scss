@@ -1,16 +1,7 @@
 $inner-color: #FFF4E3;
 $header-bgcolor: #2F5783;
 $header-border-color: darken($inner-color, 50%);
-
-@mixin resetCounters() {
-	@for $i from 1 through 6 {
-		h#{$i}.no_toc:before, h#{$i}.no_number:before {
-			content: "";
-			counter-reset: h#{$i};
-		}
-	}
-}
-
+$header-text-color: lighten($header-bgcolor, 50%);
 
 * { box-sizing: border-box; }
 
@@ -22,7 +13,7 @@ body {
 	font-size: 16px;
 	background-color: $inner-color;
 	font-family: Arial;
-	counter-reset: h1 h2 h3 h4 h5 h6;
+	counter-reset: h2 h3 h4;
 }
 
 header {
@@ -63,7 +54,7 @@ header {
 		padding: 0.33em 0.5em;
 		font-size: 1.5em;
 		vertical-align: middle;
-		color: lighten($header-bgcolor, 50%);
+		color: $header-text-color;
 		text-decoration: none;
 	}
 
@@ -153,13 +144,6 @@ footer {
 		color: darken($inner-color, 50%);
 	}
 
-	@for $i from 1 through 6 {
-		h#{$i}:before {
-			content: "";
-			counter-reset: h#{$i};
-		}
-	}
-
 	
 
 	p {
@@ -219,38 +203,50 @@ footer {
 
 /* Header Numbering */
 // Remember to add counter-reset for top-level header to body
-// Example: counter-reset: h1
-h1:before {
-	counter-reset: h2;
-	counter-increment: h1;
-	content: counter(h1) ". ";
-}
+// Example: counter-reset: h2
 h2:before {
 	counter-reset: h3;
 	counter-increment: h2;
-	content: counter(h1) "." counter(h2) ". ";
+	content: counter(h2) ". ";
 }
 h3:before {
+	counter-reset: h4;
 	counter-increment: h3;
-	content: counter(h2) "." counter(h3) ". ";
+	content: counter(h2) "." counter(h3) " ";
+}
+h4:before {
+	counter-increment: h4;
+	content: counter(h2) "." counter(h3) "." counter(h4) " ";
 }
 .no_toc:before, .no_number:before {
 	content: "";
 }
 
-@include resetCounters;
+@for $i from 1 through 6 {
+	h#{$i} {
+		margin-top: 1em;
+		margin-bottom: 0;
+	}
+}
 
-@for $i from 1 through 3{
+@for $i from 2 through 3 {
 	.section#{$i} {
-		padding-left: #{$i}em;
+		margin-left: #{$i}em;
 		h1,h2,h3,h4,h5,h6 {
-			margin-left: -#{$i}em;
+			// margin-left: -#{$i}em;
 		}
+	}
+}
+
+@for $i from 1 through 3 {
+	.section#{$i} p:first-of-type {
+		margin-top: 0;
 	}
 }
 
 table {
 	background-color: transparent;
+	border: 1px solid black;
 	padding: 1em;
 	border-collapse: collapse;
 	a {
@@ -261,10 +257,39 @@ table {
 th,td {
 	padding: 0.05em 0.5em;
 }
-.table {
+
+thead {
+	background-color: $header-bgcolor;
+	color: $header-text-color;
 	border: 1px solid black;
 }
 
+tbody {
+	background-color: $header-text-color;
+}
+
+th {
+	// border-bottom: 1px solid black;
+	border-right: 1px solid black;
+}
+td {
+	border-right: 1px solid black;
+	border-bottom: 1px solid black;
+}
+
+.warning {
+	padding: 0 2em;
+}
+
+.warning:before {
+	content: "\26A0";
+	float: left;
+	color: red;
+	font-size: 2em;
+	// line-height: 1.5ex;
+	padding-right: 0.5ex;
+	font-family: Georgia;
+}
 
 
 /* Breadcrumbs */
