@@ -17,6 +17,7 @@ module SiteSpawner
 			
 			require 'uglifier'
 			
+
 			stylesheets_dir = File.join(File.dirname(__FILE__), '..', 'styles')		
 			Sass.load_paths << "#{stylesheets_dir}"
 			
@@ -49,9 +50,9 @@ module SiteSpawner
 				layout << <<-ERB.unindent
 					<body>
 						<header>
-							<p>made at <a href="#{app.parent_url}">#{app.parent_title}</a></p>
+							<p>#{app.site_spawner[:byLine]}</p>
 							<div class="bar">
-								#{app.link_to app.site_title, '/index.html'}
+								#{app.link_to app.site_spawner[:site_title], '/index.html'}
 								#{ navigationGen() }
 								<form method="get" action="http://www.google.com/search" class="search">
 									<input type="search" name="q" placeholder="Search this site..." class="textfield" />
@@ -72,7 +73,7 @@ module SiteSpawner
 				app = @app
 				current_page = app.current_page
 				childrenHtml = seeAlsoGen(5)
-				sitemapDest = app.sitemapDest
+				sitemapDest = app.site_spawner[:sitemapLocation]
 				sitemapLink = app.link_to 'Sitemap', sitemapDest
 
 				# XXX : For some unknown reason, find_resource_by_destination_path does not find sitemapDest
@@ -88,7 +89,7 @@ module SiteSpawner
 									#{sitemapLink} &bull;
 									#{app.link_to 'Help', '/support/index.html'}
 									<br>
-									&copy; #{Time.new.year} <a href="#{app.parent_url}">#{app.parent_title}</a>
+									&copy; #{Time.new.year} <a href="#{app.site_spawner[:parent_url]}">#{app.site_spawner[:parent_title]}</a>
 								</span>
 							</footer>
 						</body>
