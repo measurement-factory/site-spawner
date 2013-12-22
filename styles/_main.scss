@@ -2,6 +2,16 @@ $inner-color: #FFF4E3;
 $header-bgcolor: #2F5783;
 $header-border-color: darken($inner-color, 50%);
 
+@mixin resetCounters() {
+	@for $i from 1 through 6 {
+		h#{$i}.no_toc:before, h#{$i}.no_number:before {
+			content: "";
+			counter-reset: h#{$i};
+		}
+	}
+}
+
+
 * { box-sizing: border-box; }
 
 body {
@@ -12,7 +22,7 @@ body {
 	font-size: 16px;
 	background-color: $inner-color;
 	font-family: Arial;
-	counter-reset: h2 h3;
+	counter-reset: h1 h2 h3 h4 h5 h6;
 }
 
 header {
@@ -101,7 +111,7 @@ header {
 	padding: 0 2em;
 }
 
-h1 {
+.contentHeader {
 	color: $header-bgcolor;
 }
 
@@ -139,6 +149,16 @@ footer {
 		font-size: 2em;
 		color: darken($inner-color, 50%);
 	}
+
+	@for $i from 1 through 6 {
+		h#{$i}:before {
+			content: "";
+			counter-reset: h#{$i};
+		}
+	}
+
+	
+
 	p {
 		text-align: center;
 	}
@@ -196,11 +216,16 @@ footer {
 
 /* Header Numbering */
 // Remember to add counter-reset for top-level header to body
-// Example: counter-reset: h2
+// Example: counter-reset: h1
+h1:before {
+	counter-reset: h2;
+	counter-increment: h1;
+	content: counter(h1) ". ";
+}
 h2:before {
 	counter-reset: h3;
 	counter-increment: h2;
-	content: counter(h2) ". ";
+	content: counter(h1) "." counter(h2) ". ";
 }
 h3:before {
 	counter-increment: h3;
@@ -209,6 +234,8 @@ h3:before {
 .no_toc:before, .no_number:before {
 	content: "";
 }
+
+@include resetCounters;
 
 @for $i from 1 through 3{
 	.section#{$i} {

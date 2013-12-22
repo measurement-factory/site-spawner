@@ -63,7 +63,7 @@ module SiteSpawner
 						</header>
 						<div class="content">
 							#{ breadcrumbs() }
-							<h1 class="contentHeader no_toc">#{current_page.data.title}</h1>
+							<h1 class="contentHeader no_number">#{current_page.data.title}</h1>
 							#{ tocGen() }
 				ERB
 				return layout
