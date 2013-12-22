@@ -16,7 +16,7 @@ $header-border-color: darken($inner-color, 50%);
 
 body {
 	width: 100%;
-	display: table-cell; // Make body expand to fit content
+	// display: table-cell; // Make body expand to fit content
 	padding: 0;
 	margin: 0;
 	font-size: 16px;
@@ -118,16 +118,19 @@ header {
 footer {
 	display: table;
 	margin-top: 0.5em;
-	padding: 0.5em 0.5em;
+	padding: 0.5em 0;
 	width: 100%;
 	background-color: lighten($header-bgcolor, 50%);
 
 	.see-also {
+		padding-left: 0.5em;		
 		display: table-cell;
 		vertical-align: middle;
 	}
 	.right-side {
-		display: table-cell;
+		padding-right: 0.5em;
+		display: inline-block;
+		float: right;
 		text-align: right;
 	}
 }
