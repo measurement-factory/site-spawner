@@ -185,7 +185,7 @@ module SiteSpawner
 			end
 
 			def menuGen()
-				return app.Menu
+				return app.site_spawner[:menu]
 			end
 
 			# Generate one level of menu tree
