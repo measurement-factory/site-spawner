@@ -218,7 +218,7 @@ module SiteSpawner
 								html << "</li>"
 							end
 						else
-							raise SyntaxError, "#{child.path}: Expected a boolean value for 'sitemap' frontmatter variable, got '#{sitemapStr}'"
+							logger.error "#{child.path}: Expected a boolean value for 'sitemap' frontmatter variable, got '#{sitemapStr}'"
 						end
 					end
 					html << "</ul>"
@@ -268,7 +268,7 @@ module SiteSpawner
 								taken = taken + 1
 							end
 						else
-							raise SyntaxError, "#{child.path}: Expected a boolean value for 'also' frontmatter variable, got '#{alsoStr}'"
+							logger.error "#{child.path}: Expected a boolean value for 'also' frontmatter variable, got '#{alsoStr}'"
 						end
 					end
 				end
@@ -335,7 +335,7 @@ module SiteSpawner
 				def csvToRows(file, regex=nil)
 					resource = sitemap.find_resource_by_path(file)
 					if resource == nil then
-						raise "Cannot find #{file}."
+						logger.error "Cannot find #{file} while processing #{current_page.path}."
 					end
 					path = resource.source_file
 					table = ''
@@ -343,7 +343,7 @@ module SiteSpawner
 					lines = CSV.read(path)
 
 					if lines.length == 0 then
-						raise "Empty CSV file: #{file}."
+						logger.error "Empty CSV file: #{file} while processing #{current_page.path}."
 					end
 					
 					lines.each do |row|
@@ -360,7 +360,7 @@ module SiteSpawner
 					end
 
 					if table.empty? then
-						raise "No #{file} rows match regex: #{regex}"
+						logger.error "No #{file} rows match regex: #{regex} while processing #{current_page.path}."
 					end
 
 					return table
@@ -368,12 +368,12 @@ module SiteSpawner
 				def tooltip(name)
 					resource = sitemap.find_resource_by_path(name)
 					if resource == nil then
-						logger.error "Cannot find tooltip resource #{name}."
+						logger.error "Cannot find tooltip resource #{name} while processing #{current_page.path}."
 						return ''
 					end
 					title = resource.data['tooltip']
 					if title == nil then
-						logger.error 'Missing tooltip for ' + name
+						logger.error 'Missing tooltip for ' + name + " while processing #{current_page.path}."
 						title = ''
 					end
 					href = resource.url
