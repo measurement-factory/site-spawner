@@ -334,13 +334,16 @@ module SiteSpawner
 				end
 				def csvToRows(file, regex=nil)
 					resource = sitemap.find_resource_by_path(file)
+					if resource == nil then
+						raise "Cannot find #{file}."
+					end
 					path = resource.source_file
 					table = ''
 
 					lines = CSV.read(path)
 
 					if lines.length == 0 then
-						raise "Empty CSV file: #{file}"
+						raise "Empty CSV file: #{file}."
 					end
 					
 					lines.each do |row|
