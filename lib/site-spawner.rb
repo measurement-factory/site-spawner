@@ -390,43 +390,51 @@ module SiteSpawner
 					return table
 				end
 				def lxTableRow(options={})
-					options[:file] = "#{:source}/#{options[:file]}"
-					yaml = YAML.load_file(options[:file])
+					file = "#{:source}/#{options[:file]}"
+					yaml = YAML.load_file(file)
 					table = ""
 
 					options[:columns].each do |column|
-						data = yaml["#{column[:key]}"]
-
-						default_format = '%s'
-
-						if data.is_a? Numeric then
-							if column[:round_to_nearest] == nil then
-								column[:round_to_nearest] = 1
-							end
-
-							data_sign = data >= 0 ? +1 : -1
-
-							rounding = column[:round_to_nearest] * data_sign
-
-							data = ((data.to_f + rounding/2.0)/rounding).floor*rounding
-
-							default_format = '%d'
-						end
-
-						if column[:format] == nil then
-							column[:format] = default_format
-						end
-					
-						begin
-							data = column[:format] % data
-						rescue
-							logger.error("#{current_page.source_file}: Incompatible cell format #{column[:format]} when printing #{data}.")
-						end
-
-						table << "#{data}|"
+						table << lxValue(:column => column, :file => options[:file]) + '|'
 					end
 
 					return table
+				end
+				def lxValue(options = {})
+					options[:file] = "#{:source}/#{options[:file]}"
+					yaml = YAML.load_file(options[:file])
+
+					column = options[:column]
+
+					data = yaml["#{column[:key]}"]
+
+					default_format = '%s'
+
+					if data.is_a? Numeric then
+						if column[:round_to_nearest] == nil then
+							column[:round_to_nearest] = 1
+						end
+
+						data_sign = data >= 0 ? +1 : -1
+
+						rounding = column[:round_to_nearest] * data_sign
+
+						data = ((data.to_f + rounding/2.0)/rounding).floor*rounding
+
+						default_format = '%d'
+					end
+
+					if column[:format] == nil then
+						column[:format] = default_format
+					end
+				
+					begin
+						data = column[:format] % data
+					rescue
+						logger.error("#{current_page.source_file}: Incompatible cell format #{column[:format]} when printing #{data}.")
+					end
+
+					return data
 				end
 			end
 		end
