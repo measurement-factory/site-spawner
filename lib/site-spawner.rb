@@ -336,6 +336,7 @@ module SiteSpawner
 					resource = sitemap.find_resource_by_path(file)
 					if resource == nil then
 						logger.error "Cannot find #{file} while processing #{current_page.path}."
+						return ''
 					end
 					path = resource.source_file
 					table = ''
