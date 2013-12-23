@@ -12,12 +12,11 @@ module SiteSpawner
 	class LayoutGenerator < ::Middleman::Extension
 		def initialize(app, options_hash={}, &block)
 			super
-			
+
 			app.set(:layoutGen, self)
 			
 			require 'uglifier'
 			
-
 			stylesheets_dir = File.join(File.dirname(__FILE__), '..', 'styles')		
 			Sass.load_paths << "#{stylesheets_dir}"
 			
@@ -25,13 +24,16 @@ module SiteSpawner
 				app = @app
 				stylesheets = ["stylesheet"]
 				current_page = app.current_page
-				title = current_page.parent ? " @ " + app.site_title : ""
+
+				cp_title = getTitle(current_page, 'title-head')
+
+				title = current_page.parent ? " @ " + app.site_spawner[:site_title] : ""
 				head = <<-HEAD.unindent
 					<!DOCTYPE HTML>
 					<html lang="en">
 						<head>
 							<meta charset="utf-8">
-							<title>#{current_page.data.title + title if current_page.data.title}</title>
+							<title>#{cp_title + title}</title>
 							#{app.stylesheet_link_tag "stylesheet"}
 						</head>
 				HEAD
@@ -63,7 +65,7 @@ module SiteSpawner
 						</header>
 						<div class="content">
 							#{ breadcrumbs() }
-							<h1 class="contentHeader no_number">#{current_page.data.title}</h1>
+							<h1 class="contentHeader no_number">#{getTitle(current_page, 'title-body')}</h1>
 							#{ tocGen() }
 				ERB
 				return layout
@@ -76,7 +78,7 @@ module SiteSpawner
 				sitemapDest = app.site_spawner[:sitemapLocation]
 				sitemapLink = app.link_to 'Sitemap', sitemapDest
 
-				# XXX : For some unknown reason, find_resource_by_destination_path does not find sitemapDest
+				# XXX : For some unknown reason, find_resource_by_destination_path does not find sitemapLink
 				sitemapLink = '' unless app.sitemap.find_resource_by_path(sitemapDest)
 				layout = <<-ERB
 							</div>
@@ -161,7 +163,7 @@ module SiteSpawner
 			end
 			
 			def tocGen()
-				sitemapHtml = getSitemapHtml(app.current_page);
+				sitemapHtml = getSitemapHtml(app.current_page, 'title-toc');
 				html = "<section class=\"toc\"><h3 class='no_number'>Sitemap</h3>#{sitemapHtml}</section>"
 				return html unless sitemapHtml.empty?
 			end
@@ -174,7 +176,7 @@ module SiteSpawner
 				while page.parent do
 					page = page.parent
 				end
-				list = getSitemapHtml(page)
+				list = getSitemapHtml(page, 'title-sitemap')
 				return list
 			end
 			
@@ -195,20 +197,23 @@ module SiteSpawner
 				return html
 			end
 
-			def getSitemapHtml(page)
+			def getSitemapHtml(page, title)
 				html = ""
 				if page.children.length > 0 then
 					html << "<ul>"
-					children = page.children.sort_by{ |child| child.data.title.to_s rescue "" }
+					
+					children = page.children
+					children = children.sort_by { |child| getTitle(child, title) rescue "" }
+
 					children.each do |page|
-						next if !page.data.title
-						childHtml = getSitemapHtml(page)
+						next if !getTitle(page, title)
+						childHtml = getSitemapHtml(page, title)
 						sitemapStr = "#{page.data.sitemap}"
 						if (sitemapStr.empty? || sitemapStr == 'true' || sitemapStr == 'false') then
 							sitemap = sitemapStr.empty? ? true : (sitemapStr == 'true')
 							if sitemap then
 								html << "<li>"
-									html << "<a href=\"#{page.url}\">#{page.data.title}</a>"
+									html << "<a href=\"#{page.url}\">#{getTitle(page, title)}</a>"
 									html << childHtml
 								html << "</li>"
 							end
@@ -218,25 +223,19 @@ module SiteSpawner
 					end
 					html << "</ul>"
 				end
-
-				# Empty Sitemap detection
-				if html == "<ul></ul>" then
-					return ''
-				end
-
 				return html
 			end
 			
-			def breadcrumbs()
+			def breadcrumbs
 				current_page = app.current_page
 				crumbs = ""
 				if current_page.parent && current_page.parent.parent then
 					page = current_page
 					while page.parent do
 						if crumbs.empty? then
-							crumbs = "<span>#{page.data.title}</span>"
+							crumbs = "<span>#{ getTitle(page, 'title-breadcrumbs') }</span>"
 						else
-							crumbs = "#{app.link_to(page.data.title, page.url)} &raquo; #{crumbs}"
+							crumbs = "#{app.link_to(getTitle(page, 'title-breadcrumbs'), page.url)} &raquo; #{crumbs}"
 						end
 						page = page.parent
 					end
@@ -244,13 +243,14 @@ module SiteSpawner
 				crumbs = "<div class=\"breadcrumbs\">#{crumbs}</div>\n" unless crumbs.empty?
 				return crumbs
 			end
+
 			def seeAlsoGen(showAmount)
 				page = app.current_page
 				childrenList = ""
 				children = page.children
 					
 				# Sort children by title
-				children = children.sort_by{ |child| child.data.title.to_s }
+				children = children.sort_by { |child| getTitle(child, 'title-seealso') }
 
 				taken = 0
 				
@@ -258,13 +258,13 @@ module SiteSpawner
 					if taken >= showAmount then
 						break
 					end
-					if child.data.title then
+					if getTitle(child, 'title-seealso') then
 						alsoStr = "#{child.data.also}"
 						if (alsoStr.empty? || alsoStr == 'true' || alsoStr == 'false') then
 							also = alsoStr.empty? ? true : (alsoStr == 'true')
 							if also then
 								childrenList << ', ' if !childrenList.empty? # Seperator
-								childrenList << app.link_to(child.data.title, child.url)
+								childrenList << app.link_to(getTitle(child, 'title-seealso'), child.url)
 								taken = taken + 1
 							end
 						else
@@ -274,6 +274,23 @@ module SiteSpawner
 				end
 				childrenList << "." if !childrenList.empty?  # period at end
 				return childrenList
+			end
+
+			def getTitle(page, needTitle)
+				titles = %w(title title-head title-body title-seealso title-sitemap title-toc title-breadcrumbs)
+				title = page.data["#{needTitle}"]
+
+				index = titles.index "#{needTitle}"
+
+				while title == nil do
+					index = index - 1
+					title = page.data["#{titles[index]}"]
+					if index == 0 && title == nil then
+						return ''
+					end
+				end
+
+				return title
 			end
 			
 			# Rendering Helpers
