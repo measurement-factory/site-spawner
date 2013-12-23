@@ -365,6 +365,20 @@ module SiteSpawner
 
 					return table
 				end
+				def tooltip(name)
+					resource = sitemap.find_resource_by_path(name)
+					if resource == nil then
+						logger.error "Cannot find tooltip resource #{name}."
+						return ''
+					end
+					title = resource.data['tooltip']
+					if title == nil then
+						logger.error 'Missing tooltip for ' + name
+						title = ''
+					end
+					href = resource.url
+					return "<sup><a title=\"#{title}\" href=\"#{href}\">**</a></sup>"
+				end
 			end
 		end
 	end

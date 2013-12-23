@@ -262,6 +262,9 @@ thead {
 	background-color: $header-bgcolor;
 	color: $header-text-color;
 	border: 1px solid black;
+	sup a {
+		color: $header-text-color;
+	}
 }
 
 tbody {
@@ -289,6 +292,10 @@ td {
 	// line-height: 1.5ex;
 	padding-right: 0.5ex;
 	font-family: Georgia;
+}
+
+sup a {
+	text-decoration: none;
 }
 
 
