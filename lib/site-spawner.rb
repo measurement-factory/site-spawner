@@ -16,6 +16,7 @@ module SiteSpawner
 			app.set(:layoutGen, self)
 			
 			require 'uglifier'
+			require 'yaml'
 			
 			stylesheets_dir = File.join(File.dirname(__FILE__), '..', 'styles')		
 			Sass.load_paths << "#{stylesheets_dir}"
@@ -395,7 +396,6 @@ module SiteSpawner
 
 					options[:columns].each do |column|
 						data = yaml["#{column[:key]}"]
-						data = 'foor'
 
 						default_format = '%s'
 
