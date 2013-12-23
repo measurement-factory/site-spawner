@@ -380,6 +380,54 @@ module SiteSpawner
 					href = resource.url
 					return "<sup><a title=\"#{title}\" href=\"#{href}\">**</a></sup>"
 				end
+				def lxTableHeader(options={})
+					table = ''
+					options[:columns].each do |column|
+						table << "#{column[:name]}|"
+					end
+
+					return table
+				end
+				def lxTableRow(options={})
+					options[:file] = "#{:source}/#{options[:file]}"
+					yaml = YAML.load_file(options[:file])
+					table = ""
+
+					options[:columns].each do |column|
+						data = yaml["#{column[:key]}"]
+						data = 'foor'
+
+						default_format = '%s'
+
+						if data.is_a? Numeric then
+							if column[:round_to_nearest] == nil then
+								column[:round_to_nearest] = 1
+							end
+
+							data_sign = data >= 0 ? +1 : -1
+
+							rounding = column[:round_to_nearest] * data_sign
+
+							data = ((data.to_f + rounding/2.0)/rounding).floor*rounding
+
+							default_format = '%d'
+						end
+
+						if column[:format] == nil then
+							column[:format] = default_format
+						end
+					
+						begin
+							data = column[:format] % data
+						rescue
+							logger.error("#{current_page.source_file}: Incompatible cell format #{column[:format]} when printing #{data}.")
+						end
+
+						table << "#{data}|"
+					end
+
+					return table
+				end
 			end
 		end
 	end
