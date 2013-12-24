@@ -494,7 +494,7 @@ module SiteSpawner
 							path = path_or_resource
 						end
 						if !path.include?('.css') && path !~ %r@^[\d\w\S]*?://@ then
-							logger.error "#{current_page.path}: url_for did not find resource '#{path}'"
+							logger.error "#{current_page.source_file}: url_for did not find resource '#{path}'"
 						end
 					end
 					
