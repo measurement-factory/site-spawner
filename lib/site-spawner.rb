@@ -436,6 +436,34 @@ module SiteSpawner
 
 					return data
 				end
+				def url_for(path_or_resource, options = {})
+					if current_page != nil && !in_sitemap?(path_or_resource) then
+						path = ''
+						if path_or_resource.is_a?(::Middleman::Sitemap::Resource) then
+							path = path_or_resource.path
+						else
+							path = path_or_resource
+						end
+						if !path.include?('.css') && path !~ %r@^[\d\w\S]*?://@ then
+							logger.error "#{current_page.path}: url_for did not find resource '#{path}'"
+						end
+					end
+					
+					super
+				end
+				def in_sitemap?(path_or_resource)
+					url = ''
+					if path_or_resource.is_a?(::Middleman::Sitemap::Resource) then
+						url = path_or_resource.url
+					else
+						url = path_or_resource
+					end
+
+					if url =~ %r@^/.*?/$@ then
+						url = url + 'index.html'
+					end
+					return sitemap.find_resource_by_destination_path(url) != nil
+				end
 			end
 		end
 	end
