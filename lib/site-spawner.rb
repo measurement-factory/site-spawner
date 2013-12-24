@@ -381,6 +381,24 @@ module SiteSpawner
 					href = resource.url
 					return "<sup><a title=\"#{title}\" href=\"#{href}\">**</a></sup>"
 				end
+				def getYAML(options = {})
+					if options[:files] == nil then
+						files = options[:file]
+					else
+						files = options[:files]
+					end
+					
+					files = Dir["#{:source}/#{files}"]
+
+					yaml = {}
+
+					files.each do |file|
+						yaml_part = YAML.load_file(file)
+						yaml.merge!(yaml_part)
+					end
+
+					return yaml
+				end
 				def lxTableHeader(options={})
 					table = ''
 					options[:columns].each do |column|
@@ -390,19 +408,26 @@ module SiteSpawner
 					return table
 				end
 				def lxTableRow(options={})
-					file = "#{:source}/#{options[:file]}"
-					yaml = YAML.load_file(file)
+					yaml = getYAML(options)
+
 					table = ""
 
-					options[:columns].each do |column|
-						table << lxValue(:column => column, :file => options[:file]) + '|'
+					begin
+						options[:columns].each do |column|
+							table << lxValue(:column => column, :yaml => yaml) + '|'
+						end
+					rescue
+						logger.error "#{current_page.source_file}: No :columns option passed to lxTableRow."
 					end
 
 					return table
 				end
 				def lxValue(options = {})
-					options[:file] = "#{:source}/#{options[:file]}"
-					yaml = YAML.load_file(options[:file])
+					if options[:yaml] == nil then
+						yaml = getYAML(options)
+					else
+						yaml = options[:yaml]
+					end
 
 					column = options[:column]
 
