@@ -53,7 +53,8 @@ module SiteSpawner
 				layout << <<-ERB.unindent
 					<body>
 						<header>
-							<p>#{app.site_spawner[:byLine]}</p>
+							<p><span class="left">#{app.site_spawner[:byLine]}</span>
+							<span class="right" id="changer">#{ app.site_spawner[:fader_text][0] }</span></p>
 							<div class="bar">
 								#{app.link_to app.site_spawner[:site_title], '/index.html'}
 								#{ navigationGen() }
@@ -96,12 +97,35 @@ module SiteSpawner
 								</span>
 							</footer>
 						</body>
+						<script>#{ generateFaderScript(app.site_spawner[:fader_text]) }</script>
 					</html>
 				ERB
 				return layout
 			end
 			
-			
+			def generateFaderScript(arr)
+				js = <<-FADEJS
+					var time = (60 + 2)*1000 // 60 seconds, 2 seconds for fading.
+					var el = document.getElementById('changer');
+					var text = #{ arr.inspect };
+
+					function update() {
+						el.classList.add('fadeOut');
+						setTimeout(showText, 1000); // 1 second for fadeOut.
+					}
+
+					function showText() {
+						var newtext = text[Math.floor(Math.random()*text.length)];
+						el.innerHTML = newtext;
+						el.classList.remove('fadeOut');
+					}
+
+					setInterval(update, time);
+				FADEJS
+				# js = minifyJS(js)
+				return js
+			end
+
 			def generateMenuCurrentScript
 				js = <<-MENUJS
 					/*
@@ -296,7 +320,7 @@ module SiteSpawner
 			
 			# Rendering Helpers
 			def minifyJS(js)
-				js = Uglifier.new.compile(js) if app.minifyJavascript
+				js = Uglifier.new.compile(js) if app.site_spawner[:minifyJavascript]
 				return js
 			end
 

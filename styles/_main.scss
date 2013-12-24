@@ -20,12 +20,23 @@ header {
 	width: 100%;
 	background-color: lighten($header-bgcolor, 50%);
 	p {
-		display: table-cell;
+		margin: 0;padding: 0;
+	}
+	span {
+		// display: table-cell;
 		margin: 0;
 		padding: 0.33em 0.5em;
 		font-size: 0.8em;
 		a {
 			text-decoration: none;
+		}
+		&.right {
+			float: right;
+			opacity: 1;
+			transition: opacity 1s linear;
+			&.fadeOut {
+				opacity: 0;
+			}
 		}
 	}
 }
