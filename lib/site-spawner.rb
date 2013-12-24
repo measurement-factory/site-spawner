@@ -54,7 +54,7 @@ module SiteSpawner
 					<body>
 						<header>
 							<p><span class="left">#{app.site_spawner[:byLine]}</span>
-							<span class="right" id="changer">#{ app.site_spawner[:fader_text][0] }</span></p>
+							<span class="right" id="changer">#{ app.site_spawner[:fader_text][0] if app.site_spawner[:fader_text] != nil }</span></p>
 							<div class="bar">
 								#{app.link_to app.site_spawner[:site_title], '/index.html'}
 								#{ navigationGen() }
@@ -97,7 +97,7 @@ module SiteSpawner
 								</span>
 							</footer>
 						</body>
-						<script>#{ generateFaderScript(app.site_spawner[:fader_text]) }</script>
+						#{ generateFaderScript(app.site_spawner[:fader_text]) if app.site_spawner[:fader_text] != nil && app.site_spawner[:fader_text].length > 1 }
 					</html>
 				ERB
 				return layout
@@ -122,7 +122,7 @@ module SiteSpawner
 
 					setInterval(update, time);
 				FADEJS
-				# js = minifyJS(js)
+				js = "<script> #{js} </script>"
 				return js
 			end
 
