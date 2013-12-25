@@ -568,6 +568,18 @@ module SiteSpawner
 					
 					super
 				end
+				def link_to(*args, &block)
+					url_arg_index = block_given? ? 0 : 1
+					options_index = block_given? ? 1 : 2
+					url = args[url_arg_index]
+					options = args[options_index] || {}
+
+					if !in_sitemap?(url) then
+						options.merge!({ :class => 'future', :title => 'TBD' })
+					end
+
+					super
+				end
 				def in_sitemap?(path_or_resource)
 					url = ''
 					if path_or_resource.is_a?(::Middleman::Sitemap::Resource) then
