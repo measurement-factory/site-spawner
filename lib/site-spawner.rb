@@ -418,19 +418,31 @@ module SiteSpawner
 					return "<sup><a title=\"#{title}\" href=\"#{href}\">**</a></sup>"
 				end
 				def getYAML(options = {})
-					if options[:files] == nil then
-						files = options[:file]
-					else
-						files = options[:files]
+					if options[:files] != nil && options[:file] != nil then
+						logger.error "#{current_page.source_file}: :files and :file options are mutually exclusive."
 					end
-					
-					files = Dir["#{:source}/#{files}"]
+
+					if options[:files] == nil then
+						files = [options[:file]]
+					else
+						if options[:files].is_a? Array then
+							files = options[:files]
+						else
+							logger.error "#{current_page.source_file}: Option :files should be an Array."
+							files = [options[:files]]
+						end
+					end
 
 					yaml = {}
-
+					
 					files.each do |file|
-						yaml_part = YAML.load_file(file)
-						yaml.merge!(yaml_part)
+						if in_sitemap?(file) then
+							file = "#{:source}/#{file}"
+							yaml_part = YAML.load_file(file)
+							yaml.merge!(yaml_part)
+						else
+							logger.error "#{current_page.source_file}: getYAML() did not find #{file} in sitemap."
+						end
 					end
 
 					return yaml
@@ -442,8 +454,8 @@ module SiteSpawner
 
 						# Add in unit if it exists.
 						if column[:unit] != nil then
-							data << '<br>'
-							data << column[:unit]
+							data = data + '<br>'
+							data = data + "(#{column[:unit]})"
 						end
 						
 						table << "#{data}|"
@@ -456,12 +468,8 @@ module SiteSpawner
 
 					table = ""
 
-					begin
-						options[:columns].each do |column|
-							table << lxValue(:column => column, :yaml => yaml) + '|'
-						end
-					rescue
-						logger.error "#{current_page.source_file}: No :columns option passed to lxTableRow."
+					options[:columns].each do |column|
+						table << lxValue(:column => column, :yaml => yaml) + '|'
 					end
 
 					return table
@@ -473,9 +481,19 @@ module SiteSpawner
 						yaml = options[:yaml]
 					end
 
-					column = options[:column]
+					if options[:column] == nil && options[:columns] != nil then
+						logger.error "#{current_page.source_file}: Use :column, not :columns with lxValue()."
+						column = options[:columns]
+					else
+						column = options[:column]
+					end
 
-					data = yaml["#{column[:key]}"]
+					data = yaml[column[:key]]
+
+					if data == nil then
+						logger.error "#{current_page.source_file}: Could not find #{column[:key]} in #{column[:name]} column."
+						return ''
+					end
 
 					default_format = '%s'
 
@@ -491,6 +509,10 @@ module SiteSpawner
 						data = ((data.to_f + rounding/2.0)/rounding).floor*rounding
 
 						default_format = '%d'
+
+						if column[:scale] != nil then
+							data = data.to_f / column[:scale].to_f
+						end
 					end
 
 					if column[:format] == nil then
