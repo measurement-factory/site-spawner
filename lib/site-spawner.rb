@@ -574,7 +574,7 @@ module SiteSpawner
 					url = args[url_arg_index]
 					options = args[options_index] || {}
 
-					if !in_sitemap?(url) then
+					if !in_sitemap?(url) && url !~ %r@^[\d\w\S]*?://@ then
 						options.merge!({ :class => 'future', :title => 'TBD' })
 					end
 
