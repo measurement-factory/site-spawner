@@ -478,7 +478,11 @@ module SiteSpawner
 					end
 				end
 				def lxTableRow(options={})
-					yaml = getYAML(options)
+					if options[:yaml] == nil then
+						yaml = getYAML(options)
+					else
+						yaml = options[:yaml]
+					end
 
 					table = ""
 
