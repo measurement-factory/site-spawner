@@ -470,6 +470,7 @@ module SiteSpawner
 						value = value + '<br> '
 						value = value + "(#{unit})"
 					elsif style == 'suffix' then
+						unit.gsub!(%r@^\s@, '')
 						value << '&nbsp;' + unit
 					else
 						logger.error "#{current_page.source_file}: Could not find get value with unkown :unit_style: #{style}."
