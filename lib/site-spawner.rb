@@ -78,6 +78,9 @@ module SiteSpawner
 				current_page = app.current_page
 				childrenHtml = seeAlsoGen(5)
 
+				sitemapLink = ''
+				help = ''
+
 				if app.site_spawner[:sitemapLocation] != nil then
 					sitemapDest = app.site_spawner[:sitemapLocation]
 					sitemapLink = app.link_to 'Sitemap', sitemapDest
