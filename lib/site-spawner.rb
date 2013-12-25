@@ -438,7 +438,15 @@ module SiteSpawner
 				def lxTableHeader(options={})
 					table = ''
 					options[:columns].each do |column|
-						table << "#{column[:name]}|"
+						data = column[:name]
+
+						# Add in unit if it exists.
+						if column[:unit] != nil then
+							data << '<br>'
+							data << column[:unit]
+						end
+						
+						table << "#{data}|"
 					end
 
 					return table
