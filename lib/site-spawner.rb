@@ -543,10 +543,12 @@ module SiteSpawner
 						logger.error("#{current_page.source_file}: Incompatible cell format #{column[:format]} when printing #{data}.")
 					end
 
-					if options[:unit_style] then
-						data = getUnit(data, column[:unit], options[:unit_style])
-					else
-						data = getUnit(data, column[:unit], 'suffix')
+					if column[:unit] != nil then
+						if options[:unit_style] then
+							data = getUnit(data, column[:unit], options[:unit_style])
+						else
+							data = getUnit(data, column[:unit], 'suffix')
+						end
 					end
 
 					return data
