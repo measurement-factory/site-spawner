@@ -488,6 +488,11 @@ module SiteSpawner
 						column = options[:column]
 					end
 
+					if column[:key] == nil then
+						logger.error "#{current_page.source_file}: Did not specify column key."
+						return ''
+					end
+
 					data = yaml[column[:key]]
 
 					if data == nil then
