@@ -454,8 +454,7 @@ module SiteSpawner
 
 						# Add in unit if it exists.
 						if column[:unit] != nil then
-							data = data + '<br>'
-							data = data + "(#{column[:unit]})"
+							data = getUnit(data, column[:unit], 'thead')
 						end
 						
 						table << "#{data}|"
@@ -463,13 +462,27 @@ module SiteSpawner
 
 					return table
 				end
+				def getUnit(value, unit, style)
+					if style == 'none' then
+						return value
+					elsif style == 'thead' then
+						unit.gsub!(%r@^\s@, '')
+						value = value + '<br> '
+						value = value + "(#{unit})"
+					elsif style == 'suffix' then
+						value << '&nbsp;' + unit
+					else
+						logger.error "#{current_page.source_file}: Could not find get value with unkown :unit_style: #{style}."
+						return value
+					end
+				end
 				def lxTableRow(options={})
 					yaml = getYAML(options)
 
 					table = ""
 
 					options[:columns].each do |column|
-						table << lxValue(:column => column, :yaml => yaml) + '|'
+						table << lxValue(:column => column, :yaml => yaml, :unit_style => 'none') + '|'
 					end
 
 					return table
@@ -528,6 +541,12 @@ module SiteSpawner
 						data = column[:format] % data
 					rescue
 						logger.error("#{current_page.source_file}: Incompatible cell format #{column[:format]} when printing #{data}.")
+					end
+
+					if options[:unit_style] then
+						data = getUnit(data, column[:unit], options[:unit_style])
+					else
+						data = getUnit(data, column[:unit], 'suffix')
 					end
 
 					return data
