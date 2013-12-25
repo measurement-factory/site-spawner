@@ -77,11 +77,20 @@ module SiteSpawner
 				app = @app
 				current_page = app.current_page
 				childrenHtml = seeAlsoGen(5)
-				sitemapDest = app.site_spawner[:sitemapLocation]
-				sitemapLink = app.link_to 'Sitemap', sitemapDest
 
-				# XXX : For some unknown reason, find_resource_by_destination_path does not find sitemapLink
-				sitemapLink = '' unless app.sitemap.find_resource_by_path(sitemapDest)
+				if app.site_spawner[:sitemapLocation] != nil then
+					sitemapDest = app.site_spawner[:sitemapLocation]
+					sitemapLink = app.link_to 'Sitemap', sitemapDest
+				end
+
+				if app.site_spawner[:helpLocation] != nil then
+					help = app.link_to 'Help', app.site_spawner[:helpLocation]
+				end
+
+				if !sitemapLink.empty? && !help.empty? then
+					sitemapLink = "#{sitemapLink} &bull;"
+				end
+
 				layout = <<-ERB
 							</div>
 							<footer>
@@ -90,8 +99,8 @@ module SiteSpawner
 								</span>
 								
 								<span class="right-side">
-									#{sitemapLink} &bull;
-									#{app.link_to 'Help', '/support/index.html'}
+									#{sitemapLink}
+									#{ help }
 									<br>
 									&copy; #{Time.new.year} <a href="#{app.site_spawner[:parent_url]}">#{app.site_spawner[:parent_title]}</a>
 								</span>
