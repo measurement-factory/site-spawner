@@ -250,7 +250,7 @@ module SiteSpawner
 					children = children.sort_by { |child| getTitle(child, title) rescue "" }
 
 					children.each do |page|
-						next if !getTitle(page, title)
+						next if getTitle(page, title).empty?
 						childHtml = getSitemapHtml(page, title)
 						sitemapStr = "#{page.data.sitemap}"
 						if (sitemapStr.empty? || sitemapStr == 'true' || sitemapStr == 'false') then
@@ -302,7 +302,7 @@ module SiteSpawner
 					if taken >= showAmount then
 						break
 					end
-					if getTitle(child, 'title-seealso') then
+					if !getTitle(child, 'title-seealso').empty? then
 						alsoStr = "#{child.data.also}"
 						if (alsoStr.empty? || alsoStr == 'true' || alsoStr == 'false') then
 							also = alsoStr.empty? ? true : (alsoStr == 'true')
