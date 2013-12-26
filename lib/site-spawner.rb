@@ -372,7 +372,7 @@ module SiteSpawner
 				def csvToRows(file, regex=nil)
 					resource = sitemap.find_resource_by_path(file)
 					if resource == nil then
-						logger.error "Cannot find #{file} while processing #{current_page.path}."
+						logger.error "Cannot find #{file} while processing #{current_page.source_file}."
 						return ''
 					end
 					path = resource.source_file
@@ -381,7 +381,7 @@ module SiteSpawner
 					lines = CSV.read(path)
 
 					if lines.length == 0 then
-						logger.error "Empty CSV file: #{file} while processing #{current_page.path}."
+						logger.error "Empty CSV file: #{file} while processing #{current_page.source_file}."
 					end
 					
 					lines.each do |row|
@@ -398,7 +398,7 @@ module SiteSpawner
 					end
 
 					if table.empty? then
-						logger.error "No #{file} rows match regex: #{regex} while processing #{current_page.path}."
+						logger.error "No #{file} rows match regex: #{regex} while processing #{current_page.source_file}."
 					end
 
 					return table
@@ -406,7 +406,7 @@ module SiteSpawner
 				def tooltip(name)
 					resource = sitemap.find_resource_by_destination_path(name)
 					if resource == nil then
-						logger.error "Cannot find tooltip resource #{name} while processing #{current_page.path}."
+						logger.error "Cannot find tooltip resource #{name} while processing #{current_page.source_file}."
 						return ''
 					end
 					title = resource.data['tooltip']
