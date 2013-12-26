@@ -209,7 +209,7 @@ module SiteSpawner
 			def tocGen()
 				sitemapHtml = getSitemapHtml(app.current_page, 'title-toc');
 				html = "<section class=\"toc\"><h3 class='no_number'>Sitemap</h3>#{sitemapHtml}</section>"
-				return html unless sitemapHtml.empty?
+				return html if !sitemapHtml.empty?
 			end
 
 			
