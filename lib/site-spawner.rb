@@ -330,6 +330,9 @@ module SiteSpawner
 					index = index - 1
 					title = page.data["#{titles[index]}"]
 					if index == 0 && title == nil then
+						if !page.binary? && !page.ignored? then
+							app.logger.error "#{page.source_file}: Could not find any titles in frontmatter."
+						end
 						return ''
 					end
 				end
