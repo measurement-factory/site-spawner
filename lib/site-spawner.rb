@@ -411,7 +411,7 @@ module SiteSpawner
 					end
 					title = resource.data['tooltip']
 					if title == nil then
-						logger.error 'Missing tooltip for ' + name + " while processing #{current_page.path}."
+						logger.error "#{resource.source_file}: missing tooltip. Needed by #{current_page.source_file}."
 						title = ''
 					end
 					href = resource.url
