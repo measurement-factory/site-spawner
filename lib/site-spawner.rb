@@ -473,12 +473,17 @@ module SiteSpawner
 					if style == 'none' then
 						return value
 					elsif style == 'thead' then
-						unit.gsub!(%r@^\s@, '')
-						value = value + '<br> '
+						if (unit =~ /^\s+/) != nil then
+							unit = unit.gsub(%r@^\s+@, '')
+						end
+						value = value + '<br>'
 						value = value + "(#{unit})"
 					elsif style == 'suffix' then
-						unit.gsub!(%r@^\s@, '')
-						value << '&nbsp;' + unit
+						if (unit =~ /^\s+/) != nil then
+							unit = unit.gsub(%r@^\s+@, '')
+							value << '&nbsp;'
+						end
+						value << unit
 					else
 						logger.error "#{current_page.source_file}: Could not find get value with unkown :unit_style: #{style}."
 						return value
