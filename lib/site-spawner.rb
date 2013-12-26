@@ -583,7 +583,7 @@ module SiteSpawner
 						else
 							path = path_or_resource
 						end
-						if !path.include?('.css') && path !~ %r@^[\d\w\S]*?://@ then
+						if !path.include?('.css') && path !~ %r@^[\d\w\S]*?://@ && !path.include?('#') then
 							logger.error "#{current_page.source_file}: url_for did not find resource '#{path}'"
 						end
 					end
@@ -596,7 +596,7 @@ module SiteSpawner
 					url = args[url_arg_index]
 					options = args[options_index] || {}
 
-					if !in_sitemap?(url) && url !~ %r@^[\d\w\S]*?://@ then
+					if !in_sitemap?(url) && url !~ %r@^[\d\w\S]*?://@ && !url.include?('#') then
 						options.merge!({ :class => 'future', :title => 'TBD' })
 					end
 
