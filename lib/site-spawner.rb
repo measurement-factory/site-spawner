@@ -29,9 +29,16 @@ module SiteSpawner
 				cp_title = getTitle(current_page, 'title-head')
 
 				title = current_page.parent ? " @ " + app.site_spawner[:site_title] : ""
+
+				classes = []
+
+				if current_page.data['header_numbering'] then
+					classes.push 'header_numbering'
+				end
+
 				head = <<-HEAD.unindent
 					<!DOCTYPE HTML>
-					<html lang="en">
+					<html lang="en" class="#{classes.join(' ')}">
 						<head>
 							<meta charset="utf-8">
 							<title>#{cp_title + title}</title>

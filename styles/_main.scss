@@ -13,7 +13,7 @@ body {
 	font-size: 16px;
 	background-color: $inner-color;
 	font-family: Arial;
-	counter-reset: h2 h3 h4;
+	counter-reset: h1 h2 h3 h4 h5 h6;
 }
 
 header {
@@ -120,6 +120,13 @@ a.future {
 
 .contentHeader {
 	color: $header-bgcolor;
+	font-size: 2.5em;
+}
+
+@for $i from 1 through 6 {
+	h#{$i} {
+		color: $header-bgcolor;
+	}
 }
 
 footer {
@@ -219,29 +226,39 @@ footer {
 
 /* Header Numbering */
 // Remember to add counter-reset for top-level header to body
-// Example: counter-reset: h2
-h2:before {
-	counter-reset: h3;
-	counter-increment: h2;
-	content: counter(h2) ". ";
+// Example: counter-reset: h1;
+.header_numbering h1:before {
+	content: counter(h1) ". ";
 }
-h3:before {
-	counter-reset: h4;
-	counter-increment: h3;
-	content: counter(h2) "." counter(h3) " ";
+.header_numbering h2:before {
+	content: counter(h1) "." counter(h2) " ";
 }
-h4:before {
-	counter-increment: h4;
-	content: counter(h2) "." counter(h3) "." counter(h4) " ";
+.header_numbering h3:before {
+	content: counter(h1) "." counter(h2) "." counter(h3) " ";
 }
-.no_toc:before, .no_number:before {
-	content: "";
+.header_numbering h4:before {
+	content: counter(h1) "." counter(h2) "." counter(h3) "." counter(h4) " ";
+}
+.header_numbering h5:before {
+	content: counter(h1) "." counter(h2) "." counter(h3) "." counter(h4) "." counter(h5) " ";
+}
+.header_numbering h6:before {
+	content: counter(h1) "." counter(h2) "." counter(h3) "." counter(h4) "." counter(h5) "." counter(h6) " ";
 }
 
 @for $i from 1 through 6 {
 	h#{$i} {
 		margin-top: 1em;
 		margin-bottom: 0;
+	}
+	.header_numbering h#{$i}:before {
+		counter-reset: h#{$i+1};
+		counter-increment: h#{$i};
+	}
+
+	.header_numbering h#{$i}.no_toc:before, h#{$i}.no_number:before {
+		counter-reset: h#{$i+1} h#{$i} !important;
+		content: "";
 	}
 }
 
