@@ -459,6 +459,10 @@ module SiteSpawner
 					options[:columns].each do |column|
 						data = column[:name]
 
+						if column[:tooltip] != nil then
+							data << tooltip(column[:tooltip])
+						end
+
 						# Add in unit if it exists.
 						if column[:unit] != nil then
 							data = getUnit(data, column[:unit], 'thead')
