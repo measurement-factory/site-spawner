@@ -506,6 +506,11 @@ module SiteSpawner
 						column = options[:column]
 					end
 
+					if column == nil then
+						logger.error "#{current_page.source_file}: lxValue() was given an invalid column."
+						return ''
+					end
+
 					if column[:key] == nil then
 						logger.error "#{current_page.source_file}: Did not specify column key."
 						return ''
@@ -514,7 +519,7 @@ module SiteSpawner
 					data = yaml[column[:key]]
 
 					if data == nil then
-						logger.error "#{current_page.source_file}: Could not find #{column[:key]} in #{column[:name]} column."
+						logger.error "#{current_page.source_file}: Could not find lx value #{column[:key]}."
 						return ''
 					end
 
