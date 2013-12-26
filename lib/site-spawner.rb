@@ -211,7 +211,7 @@ module SiteSpawner
 					return ''
 				end
 				sitemapHtml = getSitemapHtml(app.current_page, 'title-toc');
-				html = "<section class=\"toc\"><h3 class='no_number'>Sitemap</h3>#{sitemapHtml}</section>"
+				html = "<section class=\"toc\"><h3 class='no_number'>Table of Contents</h3>#{sitemapHtml}</section>"
 				return html if !sitemapHtml.empty?
 			end
 
