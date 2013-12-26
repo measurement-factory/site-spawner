@@ -262,7 +262,7 @@ module SiteSpawner
 								html << "</li>"
 							end
 						else
-							logger.error "#{child.path}: Expected a boolean value for 'sitemap' frontmatter variable, got '#{sitemapStr}'"
+							app.logger.error "#{child.path}: Expected a boolean value for 'sitemap' frontmatter variable, got '#{sitemapStr}'"
 						end
 					end
 					html << "</ul>"
@@ -312,7 +312,7 @@ module SiteSpawner
 								taken = taken + 1
 							end
 						else
-							logger.error "#{child.path}: Expected a boolean value for 'also' frontmatter variable, got '#{alsoStr}'"
+							app.logger.error "#{child.path}: Expected a boolean value for 'also' frontmatter variable, got '#{alsoStr}'"
 						end
 					end
 				end
