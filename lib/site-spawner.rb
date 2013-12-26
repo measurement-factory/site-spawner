@@ -207,6 +207,9 @@ module SiteSpawner
 			end
 			
 			def tocGen()
+				if app.current_page.data['generate-toc'] != nil && app.current_page.data['generate-toc'] == false then
+					return ''
+				end
 				sitemapHtml = getSitemapHtml(app.current_page, 'title-toc');
 				html = "<section class=\"toc\"><h3 class='no_number'>Sitemap</h3>#{sitemapHtml}</section>"
 				return html if !sitemapHtml.empty?
