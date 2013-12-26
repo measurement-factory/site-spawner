@@ -404,7 +404,7 @@ module SiteSpawner
 					return table
 				end
 				def tooltip(name)
-					resource = sitemap.find_resource_by_path(name)
+					resource = sitemap.find_resource_by_destination_path(name)
 					if resource == nil then
 						logger.error "Cannot find tooltip resource #{name} while processing #{current_page.path}."
 						return ''
