@@ -616,6 +616,9 @@ module SiteSpawner
 						if path_or_resource.is_a?(::Middleman::Sitemap::Resource) then
 							resource = path_or_resource
 						else
+							if path_or_resource =~ %r@/$@ then
+								path_or_resource << 'index.html'
+							end
 							resource = sitemap.find_resource_by_destination_path(path_or_resource)
 							resource ||= sitemap.find_resource_by_path(path_or_resource)
 						end
