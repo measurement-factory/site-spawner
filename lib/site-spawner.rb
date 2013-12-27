@@ -260,7 +260,7 @@ module SiteSpawner
 							sitemap = sitemapStr.empty? ? true : (sitemapStr == 'true')
 							if sitemap then
 								html << "<li>"
-									html << "<a href=\"#{page.url}\">#{getTitle(page, title)}</a>"
+									html << app.link_to(getTitle(page, title), page.url)
 									html << childHtml
 								html << "</li>"
 							end
@@ -347,6 +347,19 @@ module SiteSpawner
 			def minifyJS(js)
 				js = Uglifier.new.compile(js) if app.site_spawner[:minifyJavascript]
 				return js
+			end
+
+			# Callbacks
+			app.ready do
+				resources = sitemap.resources
+				app.site_spawner[:iterating_sitemap] = true
+				resources.each do |resource|
+					next if resource.binary?
+					self.current_path = nil # Reset path because nobody else will.
+					resource.render
+					self.current_path = nil # Reset path because nobody else will.
+				end
+				app.site_spawner[:iterating_sitemap] = false
 			end
 
 			# Middleman Helpers
@@ -595,6 +608,21 @@ module SiteSpawner
 						end
 						if !path.include?('.css') && path !~ %r@^[\d\w\S]*?://@ && !path.include?('#') then
 							logger.error "#{current_page.source_file}: url_for did not find resource '#{path}'"
+						end
+					end
+
+					if site_spawner[:iterating_sitemap] == true then
+						site_spawner[:pages] ||= {}
+						if path_or_resource.is_a?(::Middleman::Sitemap::Resource) then
+							resource = path_or_resource
+						else
+							resource = sitemap.find_resource_by_destination_path(path_or_resource)
+							resource ||= sitemap.find_resource_by_path(path_or_resource)
+						end
+
+						if resource != nil && !resource.binary? then
+							site_spawner[:pages][resource.source_file] ||= {}
+							site_spawner[:pages][resource.source_file][current_resource.source_file] = current_resource
 						end
 					end
 					
