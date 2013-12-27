@@ -621,8 +621,11 @@ module SiteSpawner
 						end
 
 						if resource != nil && !resource.binary? then
-							site_spawner[:pages][resource.path] ||= {}
-							site_spawner[:pages][resource.path][current_resource.source_file] = current_resource
+							logger.debug "#{current_resource.source_file}: processing link to #{resource.source_file}."
+							site_spawner[:pages][resource.source_file] ||= {}
+							site_spawner[:pages][resource.source_file][current_resource.source_file] = current_resource
+							resource_hash = site_spawner[:pages][resource.source_file]
+							logger.debug "#{resource.source_file}: New keys list #{resource_hash.keys}."
 						end
 					end
 					
