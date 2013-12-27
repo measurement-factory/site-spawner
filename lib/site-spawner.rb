@@ -621,8 +621,8 @@ module SiteSpawner
 						end
 
 						if resource != nil && !resource.binary? then
-							site_spawner[:pages][resource.source_file] ||= {}
-							site_spawner[:pages][resource.source_file][current_resource.source_file] = current_resource
+							site_spawner[:pages][resource.path] ||= {}
+							site_spawner[:pages][resource.path][current_resource.source_file] = current_resource
 						end
 					end
 					
