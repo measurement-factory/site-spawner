@@ -85,7 +85,6 @@ a.future {
 		&:first-of-type {
 			border-right-width: 3px;
 			border-bottom-width: 3px;
-			white-space: nowrap;
 		}
 		&:hover {
 			color: darken($inner-color, 20%);

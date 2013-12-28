@@ -54,8 +54,7 @@ module SiteSpawner
 				layout = ""
 				layout << generateHead()
 
-				# TODO: app.site_title needs to have all spaces replaced with &nbsp;
-				# Otherwise it has to be selected to be white-space: nowrap;
+				site_title = app.site_spawner[:site_title].gsub("\s", "&nbsp;")
 
 				layout << <<-ERB.unindent
 					<body>
@@ -63,7 +62,7 @@ module SiteSpawner
 							<p><span class="left">#{app.site_spawner[:byLine]}</span>
 							<span class="right" id="changer">#{ app.site_spawner[:fader_text][0] if app.site_spawner[:fader_text] != nil }</span></p>
 							<div class="bar">
-								#{app.link_to app.site_spawner[:site_title], '/index.html'}
+								#{app.link_to site_title, '/index.html'}
 								#{ navigationGen() }
 								<form method="get" action="http://www.google.com/search" class="search">
 									<input type="search" name="q" placeholder="Search this site..." class="textfield" />
