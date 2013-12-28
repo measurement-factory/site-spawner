@@ -26,9 +26,9 @@ module SiteSpawner
 				stylesheets = ["stylesheet"]
 				current_page = app.current_page
 
-				cp_title = getTitle(current_page, 'title-head')
+				title = getTitle(current_page, 'title-head')
 
-				title = current_page.parent ? " @ " + app.site_spawner[:site_title] : ""
+				title = title + (current_page.parent ? " @ " + app.site_spawner[:site_title] : "")
 
 				classes = []
 
@@ -41,7 +41,7 @@ module SiteSpawner
 					<html lang="en" class="#{classes.join(' ')}">
 						<head>
 							<meta charset="utf-8">
-							<title>#{cp_title + title}</title>
+							<title>#{title}</title>
 							#{app.stylesheet_link_tag "stylesheet"}
 						</head>
 				HEAD
