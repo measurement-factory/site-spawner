@@ -270,6 +270,11 @@ module SiteSpawner
 					end
 					html << "</ul>"
 				end
+
+				# If all children get skipped due to their title being empty,
+				# we need to still return an empty string. This handles that.
+				return '' if html == "<ul></ul>"
+
 				return html
 			end
 			
