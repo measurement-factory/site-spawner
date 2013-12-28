@@ -329,6 +329,17 @@ sup a {
 	text-decoration: none;
 }
 
+#disqus_thread {
+	margin: 0 2em !important;
+	// margin-top: 2em !important;
+}
+
+.seperator {
+	height: 3px;
+	width:s 100%;
+	background-color: $header-border-color;
+}
+
 
 /* Breadcrumbs */
 .breadcrumbs { padding-top: 0.5em; }

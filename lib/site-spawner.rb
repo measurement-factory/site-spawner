@@ -110,13 +110,29 @@ module SiteSpawner
 				parent_title = app.site_spawner[:parent_title].gsub("\s", "&nbsp;") # Replace all whitespaces with &nbsp; to prevent wrapping.
 				copyright = "&copy;&nbsp;#{Time.new.year}&nbsp;" << app.link_to(parent_title, app.site_spawner[:parent_url])
 
+				disqus = <<-HTML.unindent
+					<div class="seperator"></div>
+					<div id="disqus_thread"></div>
+					<script type="text/javascript">
+					    var disqus_shortname = '#{app.site_spawner[:disqus_shortname]}';
+
+					    (function() {
+					        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+					        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+					        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+					    })();
+					</script>
+					<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+					<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+				HTML
+
 				layout = <<-ERB
 							</div>
+							#{ disqus if current_page.data['disqus'] != nil && current_page.data['disqus'] == true }
 							<footer>
 								<span class="see-also">
 									#{"See Also:&nbsp;" + childrenHtml unless childrenHtml.empty?}
 								</span>
-								
 								<span class="right-side">
 									#{sitemapLink}
 									#{ help }
