@@ -260,22 +260,20 @@ footer {
 		counter-reset: h#{$i+1} h#{$i} !important;
 		content: "";
 	}
-}
 
-@for $i from 2 through 3 {
-	.section#{$i} {
-		margin-left: #{$i}em;
-		h1,h2,h3,h4,h5,h6 {
-			// margin-left: -#{$i}em;
-		}
-	}
-}
-
-@for $i from 1 through 3 {
+@for $i from 1 through 6 {
 	.section#{$i} p:first-of-type {
 		margin-top: 0;
 	}
 }
+}
+
+@for $i from 2 through 6 {
+	.section#{$i} {
+		margin-left: #{$i}em;
+	}
+}
+
 
 table {
 	background-color: transparent;
