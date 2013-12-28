@@ -261,11 +261,11 @@ footer {
 		content: "";
 	}
 
+}
 @for $i from 1 through 6 {
 	.section#{$i} p:first-of-type {
 		margin-top: 0;
 	}
-}
 }
 
 @for $i from 2 through 6 {
