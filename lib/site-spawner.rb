@@ -28,8 +28,14 @@ module SiteSpawner
 
 				title = getTitle(current_page, 'title-head')
 
-				title_head_suffix = app.site_spawner[:title_head_suffix] ? app.site_spawner[:title_head_suffix] : "@"
-				title = title + (current_page.parent ? " " << title_head_suffix << " " << app.site_spawner[:site_title] : "")
+				if current_page.data['title_head_suffix'] != nil then
+					suffix = current_page.data['title_head_suffix']
+				elsif app.site_spawner[:title_head_suffix] != nil then
+					suffix = app.site_spawner[:title_head_suffix]
+				else
+					suffix = app.site_spawner[:site_title]
+				end
+				title = title + (current_page.parent ? " @ " << suffix : "")
 
 				classes = []
 
