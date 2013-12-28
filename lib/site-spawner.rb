@@ -102,7 +102,7 @@ module SiteSpawner
 				end
 
 				parent_title = app.site_spawner[:parent_title].gsub("\s", "&nbsp;") # Replace all whitespaces with &nbsp; to prevent wrapping.
-				copyright = "&copy;&nbsp;#{Time.new.year}&nbsp;"# << app.link_to(parent_title, app.site_spawner[:parent_url])
+				copyright = "&copy;&nbsp;#{Time.new.year}&nbsp;" << app.link_to(parent_title, app.site_spawner[:parent_url])
 
 				layout = <<-ERB
 							</div>
