@@ -23,7 +23,6 @@ module SiteSpawner
 			
 			def generateHead()
 				app = @app
-				stylesheets = ["stylesheet"]
 				current_page = app.current_page
 
 				title = getTitle(current_page, 'title-head')
@@ -277,15 +276,15 @@ module SiteSpawner
 					children = page.children
 					children = children.sort_by { |child| getTitle(child, title) rescue "" }
 
-					children.each do |page|
-						next if getTitle(page, title).empty?
-						childHtml = getSitemapHtml(page, title)
-						sitemapStr = "#{page.data.sitemap}"
+					children.each do |child|
+						next if getTitle(child, title).empty?
+						childHtml = getSitemapHtml(child, title)
+						sitemapStr = "#{child.data.sitemap}"
 						if (sitemapStr.empty? || sitemapStr == 'true' || sitemapStr == 'false') then
 							sitemap = sitemapStr.empty? ? true : (sitemapStr == 'true')
 							if sitemap then
 								html << "<li>"
-									html << app.link_to(getTitle(page, title), page.url)
+									html << app.link_to(getTitle(child, title), child.url)
 									html << childHtml
 								html << "</li>"
 							end
@@ -636,7 +635,7 @@ module SiteSpawner
 						else
 							path = path_or_resource
 						end
-						if !path.include?('.css') && path !~ %r@^[\d\w\S]*?://@ && !path.include?('#') then
+						if !path.include?('.css') && path !~ %r@^[\d\w]*?://@ && !path.include?('#') then
 							logger.error "#{current_page.source_file}: url_for did not find resource '#{path}'"
 						end
 					end
@@ -670,7 +669,7 @@ module SiteSpawner
 					url = args[url_arg_index]
 					options = args[options_index] || {}
 
-					if !in_sitemap?(url) && url !~ %r@^[\d\w\S]*?://@ && !url.include?('#') then
+					if !in_sitemap?(url) && url !~ %r@^[\d\w]*?://@ && !url.include?('#') then
 						options.merge!({ :class => 'future', :title => 'TBD' })
 					end
 
