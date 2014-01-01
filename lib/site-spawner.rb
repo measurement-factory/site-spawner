@@ -385,7 +385,12 @@ module SiteSpawner
 				resources.each do |resource|
 					next if resource.binary?
 					self.current_path = nil # Reset path because nobody else will.
-					resource.render
+					begin
+						resource.render
+					rescue
+						error = resource.source_file << ": Failed to render resource: #{$!}"
+						logger.error(error)
+					end
 					self.current_path = nil # Reset path because nobody else will.
 				end
 				app.site_spawner[:iterating_sitemap] = false
