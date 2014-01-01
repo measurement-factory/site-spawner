@@ -272,13 +272,16 @@ module SiteSpawner
 					if taken >= showAmount then
 						break
 					end
-					if !getTitle(child, 'title-seealso').empty? then
+
+					child_title = getTitle(child, 'title-seealso')
+
+					if !child_title.empty? then
 						alsoStr = "#{child.data.also}"
 						if (alsoStr.empty? || alsoStr == 'true' || alsoStr == 'false') then
 							also = alsoStr.empty? ? true : (alsoStr == 'true')
 							if also then
 								childrenList << ', ' if !childrenList.empty? # Seperator
-								childrenList << app.link_to(getTitle(child, 'title-seealso'), child.url)
+								childrenList << app.link_to(child_title, child.url)
 								taken = taken + 1
 							end
 						else
