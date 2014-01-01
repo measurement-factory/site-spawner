@@ -14,13 +14,13 @@ module SiteSpawner
 			super
 
 			app.set(:layoutGen, self)
-			
+
 			require 'uglifier'
 			require 'yaml'
-			
-			stylesheets_dir = File.join(File.dirname(__FILE__), '..', 'styles')		
+
+			stylesheets_dir = File.join(File.dirname(__FILE__), '..', 'styles')
 			Sass.load_paths << "#{stylesheets_dir}"
-			
+
 			def generateHead()
 				app = @app
 				current_page = app.current_page
@@ -84,7 +84,7 @@ module SiteSpawner
 				ERB
 				return layout
 			end
-			
+
 			def generateAfter()
 				app = @app
 				current_page = app.current_page
@@ -145,7 +145,7 @@ module SiteSpawner
 				ERB
 				return layout
 			end
-			
+
 			def generateFaderScript(arr)
 				js = <<-FADEJS
 					var time = (60 + 2)*1000 // 60 seconds, 2 seconds for fading.
@@ -168,7 +168,7 @@ module SiteSpawner
 				js = "<script> #{js} </script>"
 				return js
 			end
-			
+
 			def tocGen()
 				if app.current_page.data['generate-toc'] != nil && app.current_page.data['generate-toc'] == false then
 					return ''
@@ -178,7 +178,7 @@ module SiteSpawner
 				return html if !sitemapHtml.empty?
 			end
 
-			
+
 			# Helpers
 			def sitemapGen()
 				app = @app
@@ -189,7 +189,7 @@ module SiteSpawner
 				list = getSitemapHtml(page, 'title-sitemap')
 				return list
 			end
-			
+
 			def navigationGen()
 				return app.site_spawner[:menu]
 			end
@@ -207,7 +207,7 @@ module SiteSpawner
 				html = ""
 				if page.children.length > 0 then
 					html << "<ul>"
-					
+
 					children = page.children
 					children = children.sort_by { |child| getTitle(child, title) rescue "" }
 
@@ -237,7 +237,7 @@ module SiteSpawner
 
 				return html
 			end
-			
+
 			def breadcrumbs
 				current_page = app.current_page
 				crumbs = ""
@@ -262,12 +262,12 @@ module SiteSpawner
 				page = app.current_page
 				childrenList = ""
 				children = page.children
-					
+
 				# Sort children by title
 				children = children.sort_by { |child| getTitle(child, 'title-seealso') }
 
 				taken = 0
-				
+
 				children.each do |child|
 					if taken >= showAmount then
 						break
@@ -312,7 +312,7 @@ module SiteSpawner
 
 				return title
 			end
-			
+
 			# Rendering Helpers
 			def minifyJS(js)
 				js = Uglifier.new.compile(js) if app.site_spawner[:minifyJavascript]
@@ -384,7 +384,7 @@ module SiteSpawner
 					if lines.length == 0 then
 						logger.error "Empty CSV file: #{file} while processing #{current_page.source_file}."
 					end
-					
+
 					lines.each do |row|
 						if regex != nil then
 							if row[0] !~ %r@#{regex}@ then
@@ -435,7 +435,7 @@ module SiteSpawner
 					end
 
 					yaml = {}
-					
+
 					files.each do |file|
 						if in_sitemap?(file) then
 							file = "#{:source}/#{file}"
@@ -461,7 +461,7 @@ module SiteSpawner
 						if column[:unit] != nil then
 							data = getUnit(data, column[:unit], 'thead')
 						end
-						
+
 						table << "#{data}|"
 					end
 
@@ -556,7 +556,7 @@ module SiteSpawner
 					if column[:format] == nil then
 						column[:format] = default_format
 					end
-				
+
 					begin
 						data = column[:format] % data
 					rescue
@@ -606,7 +606,7 @@ module SiteSpawner
 							logger.debug "#{resource.source_file}: New keys list #{resource_hash.keys}."
 						end
 					end
-					
+
 					super
 				end
 				def link_to(*args, &block)
