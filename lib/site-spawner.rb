@@ -244,10 +244,12 @@ module SiteSpawner
 				if current_page.parent && current_page.parent.parent then
 					page = current_page
 					while page.parent do
+						page_title = getTitle(page, 'title-breadcrumbs')
+
 						if crumbs.empty? then
-							crumbs = "<span>#{ getTitle(page, 'title-breadcrumbs') }</span>"
+							crumbs = "<span>" << page_title << "</span>"
 						else
-							crumbs = "#{app.link_to(getTitle(page, 'title-breadcrumbs'), page.url)} &raquo; #{crumbs}"
+							crumbs = "#{app.link_to(page_title, page.url)} &raquo; #{crumbs}"
 						end
 						page = page.parent
 					end
