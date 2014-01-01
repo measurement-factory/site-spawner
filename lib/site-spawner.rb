@@ -168,67 +168,6 @@ module SiteSpawner
 				js = "<script> #{js} </script>"
 				return js
 			end
-
-			def generateMenuCurrentScript
-				js = <<-MENUJS
-					/*
-					  Add 'current' class to menu item that links to current page,
-					  or head of current page.
-					  
-					  Script does not support IE 9 and lower,
-					  as well as Opera Mini, versions 5.0 through 7.0.
-					  Source: http://caniuse.com/#feat=classlist
-					*/
-					var firstLevel = window.location.pathname.split( '/' )[1];
-					[].forEach.call( document.querySelectorAll('.nav>ul>li>a'), function(el) {
-						var elHref = el.href.split('/')[3];
-						if (firstLevel == elHref) {
-							// Never needs to be removed - removed on page reload.
-							el.classList.add('current');
-						}
-					});
-				MENUJS
-				js = minifyJS(js)
-				return js
-			end
-			
-			
-			def generateMenuHoverScript(time)
-				js = <<-MENUJS
-					/*
-					  Script adds 'onHover' class to any 'li' item in '.nav'.
-					  
-					  Script does not support IE 9 and lower,
-					  as well as Opera Mini, versions 5.0 through 7.0.
-					  Source: http://caniuse.com/#feat=classlist
-					*/
-					var timeouts = [];
-					var elements = [];
-					function mouseOver(element) {
-						element.classList.add('onHover');
-						for (var i=0, len = timeouts.length; i < len; i++) {
-							clearTimeout(timeouts[i]);
-							elements[i].classList.remove('onHover');
-						}
-						timeouts = []; // Empty all instances of Array
-						elements = [];
-					};
-					function mouseOut(element) {
-						var menuElement = element,
-						timeoutId = setTimeout(function(){
-							menuElement.classList.remove('onHover');
-						}, #{time});
-						timeouts.push(timeoutId);
-						elements.push(menuElement);
-					}
-					[].forEach.call( document.querySelectorAll('.nav li'), function(el) {
-						el.addEventListener('mouseover', function(){mouseOver(el)}, false);
-						el.addEventListener('mouseout',  function(){mouseOut(el) }, false);
-					});
-				MENUJS
-				js = minifyJS(js)
-				return js
-			end
 			
 			def tocGen()
 				if app.current_page.data['generate-toc'] != nil && app.current_page.data['generate-toc'] == false then
