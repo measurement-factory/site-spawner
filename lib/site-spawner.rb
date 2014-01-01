@@ -212,14 +212,15 @@ module SiteSpawner
 					children = children.sort_by { |child| getTitle(child, title) rescue "" }
 
 					children.each do |child|
-						next if getTitle(child, title).empty?
+						child_title = getTitle(child, title)
+						next if child_title.empty?
 						childHtml = getSitemapHtml(child, title)
 						sitemapStr = "#{child.data.sitemap}"
 						if (sitemapStr.empty? || sitemapStr == 'true' || sitemapStr == 'false') then
 							sitemap = sitemapStr.empty? ? true : (sitemapStr == 'true')
 							if sitemap then
 								html << "<li>"
-									html << app.link_to(getTitle(child, title), child.url)
+									html << app.link_to(child_title, child.url)
 									html << childHtml
 								html << "</li>"
 							end
