@@ -191,10 +191,6 @@ module SiteSpawner
 			end
 			
 			def navigationGen()
-				return menuGen()
-			end
-
-			def menuGen()
 				return app.site_spawner[:menu]
 			end
 
