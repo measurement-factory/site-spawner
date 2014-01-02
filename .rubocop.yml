@@ -1,0 +1,47 @@
+AllCops:
+  Includes:
+    - Rakefile
+  Excludes:
+    - bin/**
+Tab:
+  Enabled: false
+IndentationWidth:
+  Enabled: false
+Encoding:
+  Enabled: false
+MethodLength:
+  Enabled: false
+MethodDefParentheses:
+  Enabled: false
+Documentation:
+  Enabled: false
+ClassLength:
+  Enabled: false
+CyclomaticComplexity:
+  Enabled: false
+MethodDefParentheses:
+  Enabled: true
+DefWithParentheses:
+  Enabled: false
+MethodCallParentheses:
+  Enabled: false
+MethodName:
+  Enabled: false
+MultilineIfThen:
+  Enabled: false
+LineLength:
+  Enabled: false
+RedundantReturn:
+  Enabled: false
+VariableName:
+  Enabled: false
+OneLineConditional:
+  Enabled: false
+IfUnlessModifier:
+  Enabled: false
+WhileUntilModifier:
+  Enabled: false
+WhileUntilDo:
+  Enabled: false
+ParenthesesAroundCondition:
+  Enabled: false

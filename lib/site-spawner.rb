@@ -1,7 +1,7 @@
 class String
 	# Unindent multiline string based on lowest amount of whitespace.
 	def unindent
-		gsub(/^#{scan(/^\s*/).min_by{|l|l.length}}/, '')
+		gsub(/^#{scan(/^\s*/).min_by { |l|l.length }}/, '')
 	end
 end
 
@@ -10,7 +10,7 @@ module SiteSpawner
 	require 'middleman-core'
 
 	class LayoutGenerator < ::Middleman::Extension
-		def initialize(app, options_hash={}, &block)
+		def initialize(app, options_hash = {}, &block)
 			super
 
 			app.config[:layoutGen] = self
@@ -73,7 +73,7 @@ module SiteSpawner
 								<form method="get" action="http://www.google.com/search" class="search">
 									<input type="search" name="q" placeholder="Search this site..." class="textfield" />
 									<input type="submit" value="Search" class="button" />
-									<input type="radio" name="sitesearch" value="web-polygraph.org" checked hidden class="hidden" />
+									<input type="radio" name="sitesearch" value="#{app.site_spawner[:search_scope]}" checked hidden class="hidden" />
 								</form>
 							</div>
 						</header>
@@ -177,7 +177,6 @@ module SiteSpawner
 				html = "<section class=\"toc\"><h3 class='no_number'>Table of Contents</h3>#{sitemapHtml}</section>"
 				return html if !sitemapHtml.empty?
 			end
-
 
 			# Helpers
 			def sitemapGen()
@@ -329,7 +328,7 @@ module SiteSpawner
 					begin
 						resource.render
 					rescue
-						error = resource.source_file << ": Failed to render resource: #{$!}"
+						error = resource.source_file << ": Failed to render resource: #{$ERROR_INFO}"
 						logger.error(error)
 					end
 					self.current_path = nil # Reset path because nobody else will.
@@ -362,7 +361,6 @@ module SiteSpawner
 					output << html
 					output << '</a>'
 
-
 					# Prevent markdown from re-rendering its own output.
 					if isMarkdown then
 						output = "{::nomarkdown}\n" + output + "\n{:/nomarkdown}"
@@ -370,7 +368,7 @@ module SiteSpawner
 
 					concat output
 				end
-				def csvToRows(file, regex=nil)
+				def csvToRows(file, regex = nil)
 					resource = sitemap.find_resource_by_path(file)
 					if resource == nil then
 						logger.error "Cannot find #{file} while processing #{current_page.source_file}."
@@ -448,7 +446,7 @@ module SiteSpawner
 
 					return yaml
 				end
-				def lxTableHeader(options={})
+				def lxTableHeader(options = {})
 					table = ''
 					options[:columns].each do |column|
 						data = column[:name]
@@ -487,7 +485,7 @@ module SiteSpawner
 						return value
 					end
 				end
-				def lxTableRow(options={})
+				def lxTableRow(options = {})
 					if options[:yaml] == nil then
 						yaml = getYAML(options)
 					else
@@ -497,7 +495,7 @@ module SiteSpawner
 					table = ''
 
 					options[:columns].each do |column|
-						table << lxValue(:column => column, :yaml => yaml, :unit_style => 'none') + '|'
+						table << lxValue(column: column, yaml: yaml, unit_style: 'none') + '|'
 					end
 
 					return table
@@ -544,7 +542,7 @@ module SiteSpawner
 
 						rounding = column[:round_to_nearest] * data_sign
 
-						data = ((data.to_f + rounding/2.0)/rounding).floor*rounding
+						data = ((data.to_f + rounding / 2.0) / rounding).floor * rounding
 
 						default_format = '%d'
 
@@ -616,7 +614,7 @@ module SiteSpawner
 					options = args[options_index] || {}
 
 					if !in_sitemap?(url) && url !~ %r@^[\d\w]*?://@ && !url.include?('#') then
-						options.merge!({ :class => 'future', :title => 'TBD' })
+						options.merge!( class: 'future', title: 'TBD' )
 					end
 
 					super
