@@ -1,13 +1,13 @@
 class String
 	# Unindent multiline string based on lowest amount of whitespace.
 	def unindent
-		gsub(/^#{scan(/^\s*/).min_by{|l|l.length}}/, "")
+		gsub(/^#{scan(/^\s*/).min_by{|l|l.length}}/, '')
 	end
 end
 
 module SiteSpawner
 	# Require core library
-	require "middleman-core"
+	require 'middleman-core'
 
 	class LayoutGenerator < ::Middleman::Extension
 		def initialize(app, options_hash={}, &block)
@@ -34,7 +34,7 @@ module SiteSpawner
 				else
 					suffix = app.site_spawner[:site_title]
 				end
-				title = title + (current_page.parent ? " @ " << suffix : "")
+				title = title + (current_page.parent ? ' @ ' << suffix : '')
 
 				classes = []
 
@@ -48,7 +48,7 @@ module SiteSpawner
 						<head>
 							<meta charset="utf-8">
 							<title>#{title}</title>
-							#{app.stylesheet_link_tag "stylesheet"}
+							#{app.stylesheet_link_tag 'stylesheet'}
 						</head>
 				HEAD
 				return head
@@ -57,10 +57,10 @@ module SiteSpawner
 			def generateBefore
 				app = @app
 				current_page = app.current_page
-				layout = ""
+				layout = ''
 				layout << generateHead()
 
-				site_title = app.site_spawner[:site_title].gsub("\s", "&nbsp;")
+				site_title = app.site_spawner[:site_title].gsub("\s", '&nbsp;')
 
 				layout << <<-ERB.unindent
 					<body>
@@ -106,7 +106,7 @@ module SiteSpawner
 					sitemapLink = "#{sitemapLink} &bull;"
 				end
 
-				parent_title = app.site_spawner[:parent_title].gsub("\s", "&nbsp;") # Replace all whitespaces with &nbsp; to prevent wrapping.
+				parent_title = app.site_spawner[:parent_title].gsub("\s", '&nbsp;') # Replace all whitespaces with &nbsp; to prevent wrapping.
 				copyright = "&copy;&nbsp;#{Time.new.year}&nbsp;" << app.link_to(parent_title, app.site_spawner[:parent_url])
 
 				disqus = <<-HTML.unindent
@@ -130,7 +130,7 @@ module SiteSpawner
 							#{ disqus if current_page.data['disqus'] != nil && current_page.data['disqus'] == true }
 							<footer>
 								<span class="see-also">
-									#{"See Also:&nbsp;" + childrenHtml unless childrenHtml.empty?}
+									#{'See Also:&nbsp;' + childrenHtml unless childrenHtml.empty?}
 								</span>
 								<span class="right-side">
 									#{sitemapLink}
@@ -204,12 +204,12 @@ module SiteSpawner
 			end
 
 			def getSitemapHtml(page, title)
-				html = ""
+				html = ''
 				if page.children.length > 0 then
-					html << "<ul>"
+					html << '<ul>'
 
 					children = page.children
-					children = children.sort_by { |child| getTitle(child, title) rescue "" }
+					children = children.sort_by { |child| getTitle(child, title) rescue '' }
 
 					children.each do |child|
 						child_title = getTitle(child, title)
@@ -219,35 +219,35 @@ module SiteSpawner
 						if (sitemapStr.empty? || sitemapStr == 'true' || sitemapStr == 'false') then
 							sitemap = sitemapStr.empty? ? true : (sitemapStr == 'true')
 							if sitemap then
-								html << "<li>"
+								html << '<li>'
 									html << app.link_to(child_title, child.url)
 									html << childHtml
-								html << "</li>"
+								html << '</li>'
 							end
 						else
 							app.logger.error "#{child.path}: Expected a boolean value for 'sitemap' frontmatter variable, got '#{sitemapStr}'"
 						end
 					end
-					html << "</ul>"
+					html << '</ul>'
 				end
 
 				# If all children get skipped due to their title being empty,
 				# we need to still return an empty string. This handles that.
-				return '' if html == "<ul></ul>"
+				return '' if html == '<ul></ul>'
 
 				return html
 			end
 
 			def breadcrumbs
 				current_page = app.current_page
-				crumbs = ""
+				crumbs = ''
 				if current_page.parent && current_page.parent.parent then
 					page = current_page
 					while page.parent do
 						page_title = getTitle(page, 'title-breadcrumbs')
 
 						if crumbs.empty? then
-							crumbs = "<span>" << page_title << "</span>"
+							crumbs = '<span>' << page_title << '</span>'
 						else
 							crumbs = "#{app.link_to(page_title, page.url)} &raquo; #{crumbs}"
 						end
@@ -260,7 +260,7 @@ module SiteSpawner
 
 			def seeAlsoGen(showAmount)
 				page = app.current_page
-				childrenList = ""
+				childrenList = ''
 				children = page.children
 
 				# Sort children by title
@@ -289,7 +289,7 @@ module SiteSpawner
 						end
 					end
 				end
-				childrenList << "." if !childrenList.empty?  # period at end
+				childrenList << '.' if !childrenList.empty?  # period at end
 				return childrenList
 			end
 
@@ -344,7 +344,7 @@ module SiteSpawner
 						dirname = File.dirname(current_page.path)
 						filename = "#{:source}/#{dirname}/#{filename}"
 					end
-					file = File.open(filename, "r")
+					file = File.open(filename, 'r')
 					# Read whole file into content variable
 					content = file.read
 					file.close
@@ -360,7 +360,7 @@ module SiteSpawner
 					html = Tilt['markdown'].new { capture(*args, &block) }.render
 					output = "<a href=\"#{ link }\" class=\"roadpost\">"
 					output << html
-					output << "</a>"
+					output << '</a>'
 
 
 					# Prevent markdown from re-rendering its own output.
@@ -394,7 +394,7 @@ module SiteSpawner
 						row.each do |cell|
 							table << "|#{cell}"
 						end
-						table << "|"
+						table << '|'
 						table << "\n"
 					end
 
@@ -494,7 +494,7 @@ module SiteSpawner
 						yaml = options[:yaml]
 					end
 
-					table = ""
+					table = ''
 
 					options[:columns].each do |column|
 						table << lxValue(:column => column, :yaml => yaml, :unit_style => 'none') + '|'
