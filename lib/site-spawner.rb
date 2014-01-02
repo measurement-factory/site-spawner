@@ -27,9 +27,9 @@ module SiteSpawner
 
 				title = getTitle(current_page, 'title-head')
 
-				if current_page.data['title_head_suffix'] != nil then
+				if !current_page.data['title_head_suffix'].nil? then
 					suffix = current_page.data['title_head_suffix']
-				elsif app.site_spawner[:title_head_suffix] != nil then
+				elsif !app.site_spawner[:title_head_suffix].nil? then
 					suffix = app.site_spawner[:title_head_suffix]
 				else
 					suffix = app.site_spawner[:site_title]
@@ -66,7 +66,7 @@ module SiteSpawner
 					<body>
 						<header>
 							<p><span class="left">#{app.site_spawner[:byLine]}</span>
-							<span class="right" id="changer">#{ app.site_spawner[:fader_text][0] if app.site_spawner[:fader_text] != nil }</span></p>
+							<span class="right" id="changer">#{ app.site_spawner[:fader_text][0] unless app.site_spawner[:fader_text].nil? }</span></p>
 							<div class="bar">
 								#{app.link_to site_title, '/index.html'}
 								#{ navigationGen() }
@@ -93,16 +93,16 @@ module SiteSpawner
 				sitemapLink = ''
 				help = ''
 
-				if app.site_spawner[:sitemapLocation] != nil then
+				unless app.site_spawner[:sitemapLocation].nil? then
 					sitemapDest = app.site_spawner[:sitemapLocation]
 					sitemapLink = app.link_to 'Sitemap', sitemapDest
 				end
 
-				if app.site_spawner[:helpLocation] != nil then
+				unless app.site_spawner[:helpLocation].nil? then
 					help = app.link_to 'Help', app.site_spawner[:helpLocation]
 				end
 
-				if !sitemapLink.empty? && !help.empty? then
+				unless sitemapLink.empty? && help.empty? then
 					sitemapLink = "#{sitemapLink} &bull;"
 				end
 
@@ -127,7 +127,7 @@ module SiteSpawner
 
 				layout = <<-ERB
 							</div>
-							#{ disqus if current_page.data['disqus'] != nil && current_page.data['disqus'] == true }
+							#{ disqus if !current_page.data['disqus'].nil? && current_page.data['disqus'] == true }
 							<footer>
 								<span class="see-also">
 									#{'See Also:&nbsp;' + childrenHtml unless childrenHtml.empty?}
@@ -140,7 +140,7 @@ module SiteSpawner
 								</span>
 							</footer>
 						</body>
-						#{ generateFaderScript(app.site_spawner[:fader_text]) if app.site_spawner[:fader_text] != nil && app.site_spawner[:fader_text].length > 1 }
+						#{ generateFaderScript(app.site_spawner[:fader_text]) if !app.site_spawner[:fader_text].nil? && app.site_spawner[:fader_text].length > 1 }
 					</html>
 				ERB
 				return layout
@@ -170,12 +170,12 @@ module SiteSpawner
 			end
 
 			def tocGen()
-				if app.current_page.data['generate-toc'] != nil && app.current_page.data['generate-toc'] == false then
+				if !app.current_page.data['generate-toc'].nil? && app.current_page.data['generate-toc'] == false then
 					return ''
 				end
-				sitemapHtml = getSitemapHtml(app.current_page, 'title-toc');
+				sitemapHtml = getSitemapHtml(app.current_page, 'title-toc')
 				html = "<section class=\"toc\"><h3 class='no_number'>Table of Contents</h3>#{sitemapHtml}</section>"
-				return html if !sitemapHtml.empty?
+				return html unless sitemapHtml.empty?
 			end
 
 			# Helpers
@@ -208,7 +208,7 @@ module SiteSpawner
 					html << '<ul>'
 
 					children = page.children
-					children = children.sort_by { |child| getTitle(child, title) rescue '' }
+					children = children.sort_by { |child| getTitle(child, title) }
 
 					children.each do |child|
 						child_title = getTitle(child, title)
@@ -274,12 +274,12 @@ module SiteSpawner
 
 					child_title = getTitle(child, 'title-seealso')
 
-					if !child_title.empty? then
+					unless child_title.empty? then
 						alsoStr = "#{child.data.also}"
 						if (alsoStr.empty? || alsoStr == 'true' || alsoStr == 'false') then
 							also = alsoStr.empty? ? true : (alsoStr == 'true')
 							if also then
-								childrenList << ', ' if !childrenList.empty? # Seperator
+								childrenList << ', ' unless childrenList.empty? # Seperator
 								childrenList << app.link_to(child_title, child.url)
 								taken = taken + 1
 							end
@@ -288,7 +288,7 @@ module SiteSpawner
 						end
 					end
 				end
-				childrenList << '.' if !childrenList.empty?  # period at end
+				childrenList << '.' unless childrenList.empty?  # period at end
 				return childrenList
 			end
 
@@ -298,10 +298,10 @@ module SiteSpawner
 
 				index = titles.index "#{needTitle}"
 
-				while title == nil do
+				while title.nil? do
 					index = index - 1
 					title = page.data["#{titles[index]}"]
-					if index == 0 && title == nil then
+					if index == 0 && title.nil? then
 						if !page.binary? && !page.ignored? then
 							app.logger.error "#{page.source_file}: Could not find any titles in frontmatter."
 						end
@@ -339,7 +339,7 @@ module SiteSpawner
 			# Middleman Helpers
 			app.helpers do
 				def include(filename)
-					if !filename.start_with?('/') then
+					unless filename.start_with?('/') then
 						dirname = File.dirname(current_page.path)
 						filename = "#{:source}/#{dirname}/#{filename}"
 					end
@@ -349,9 +349,11 @@ module SiteSpawner
 					file.close
 					return content
 				end
+
 				def menu(*children)
 					layoutGen.menu(children)
 				end
+
 				def roadpost(*args, &block)
 					isMarkdown = current_page.source_file.include?('.md.')
 					link = url_for(args[0])
@@ -368,9 +370,10 @@ module SiteSpawner
 
 					concat output
 				end
+
 				def csvToRows(file, regex = nil)
 					resource = sitemap.find_resource_by_path(file)
-					if resource == nil then
+					if resource.nil? then
 						logger.error "Cannot find #{file} while processing #{current_page.source_file}."
 						return ''
 					end
@@ -384,8 +387,8 @@ module SiteSpawner
 					end
 
 					lines.each do |row|
-						if regex != nil then
-							if row[0] !~ %r@#{regex}@ then
+						if regex.nil? then
+							if row[0] !~ /#{regex}/ then
 								next
 							end
 						end
@@ -402,26 +405,28 @@ module SiteSpawner
 
 					return table
 				end
+
 				def tooltip(name)
 					resource = sitemap.find_resource_by_destination_path(name)
-					if resource == nil then
+					if resource.nil? then
 						logger.error "Cannot find tooltip resource #{name} while processing #{current_page.source_file}."
 						return ''
 					end
 					title = resource.data['tooltip']
-					if title == nil then
+					if title.nil? then
 						logger.error "#{resource.source_file}: missing tooltip. Needed by #{current_page.source_file}."
 						title = ''
 					end
 					href = resource.url
 					return "<sup><a title=\"#{title}\" href=\"#{href}\">**</a></sup>"
 				end
+
 				def getYAML(options = {})
-					if options[:files] != nil && options[:file] != nil then
+					unless options[:files].nil? && options[:file].nil? then
 						logger.error "#{current_page.source_file}: :files and :file options are mutually exclusive."
 					end
 
-					if options[:files] == nil then
+					if options[:files].nil? then
 						files = [options[:file]]
 					else
 						if options[:files].is_a? Array then
@@ -446,17 +451,18 @@ module SiteSpawner
 
 					return yaml
 				end
+
 				def lxTableHeader(options = {})
 					table = ''
 					options[:columns].each do |column|
 						data = column[:name]
 
-						if column[:tooltip] != nil then
+						unless column[:tooltip].nil? then
 							data << tooltip(column[:tooltip])
 						end
 
 						# Add in unit if it exists.
-						if column[:unit] != nil then
+						unless column[:unit].nil? then
 							data = getUnit(data, column[:unit], 'thead')
 						end
 
@@ -465,18 +471,19 @@ module SiteSpawner
 
 					return table
 				end
+
 				def getUnit(value, unit, style)
 					if style == 'none' then
 						return value
 					elsif style == 'thead' then
-						if (unit =~ /^\s+/) != nil then
-							unit = unit.gsub(%r@^\s+@, '')
+						unless (unit =~ /^\s+/).nil? then
+							unit = unit.gsub(/^\s+/, '')
 						end
 						value = value + '<br>'
 						value = value + "(#{unit})"
 					elsif style == 'suffix' then
-						if (unit =~ /^\s+/) != nil then
-							unit = unit.gsub(%r@^\s+@, '')
+						unless (unit =~ /^\s+/).nil? then
+							unit = unit.gsub(/^\s+/, '')
 							value << '&nbsp;'
 						end
 						value << unit
@@ -485,8 +492,9 @@ module SiteSpawner
 						return value
 					end
 				end
+
 				def lxTableRow(options = {})
-					if options[:yaml] == nil then
+					if options[:yaml].nil? then
 						yaml = getYAML(options)
 					else
 						yaml = options[:yaml]
@@ -500,33 +508,34 @@ module SiteSpawner
 
 					return table
 				end
+
 				def lxValue(options = {})
-					if options[:yaml] == nil then
+					if options[:yaml].nil? then
 						yaml = getYAML(options)
 					else
 						yaml = options[:yaml]
 					end
 
-					if options[:column] == nil && options[:columns] != nil then
+					if options[:column].nil? && !options[:columns].nil? then
 						logger.error "#{current_page.source_file}: Use :column, not :columns with lxValue()."
 						column = options[:columns]
 					else
 						column = options[:column]
 					end
 
-					if column == nil then
+					if column.nil? then
 						logger.error "#{current_page.source_file}: lxValue() was given an invalid column."
 						return ''
 					end
 
-					if column[:key] == nil then
+					if column[:key].nil? then
 						logger.error "#{current_page.source_file}: Did not specify column key."
 						return ''
 					end
 
 					data = yaml[column[:key]]
 
-					if data == nil then
+					if data.nil? then
 						logger.error "#{current_page.source_file}: Could not find lx value #{column[:key]}."
 						return ''
 					end
@@ -534,7 +543,7 @@ module SiteSpawner
 					default_format = '%s'
 
 					if data.is_a? Numeric then
-						if column[:round_to_nearest] == nil then
+						if column[:round_to_nearest].nil? then
 							column[:round_to_nearest] = 1
 						end
 
@@ -546,12 +555,12 @@ module SiteSpawner
 
 						default_format = '%d'
 
-						if column[:scale] != nil then
+						unless column[:scale].nil? then
 							data = data.to_f / column[:scale].to_f
 						end
 					end
 
-					if column[:format] == nil then
+					if column[:format].nil? then
 						column[:format] = default_format
 					end
 
@@ -561,7 +570,7 @@ module SiteSpawner
 						logger.error("#{current_page.source_file}: Incompatible cell format #{column[:format]} when printing #{data}.")
 					end
 
-					if column[:unit] != nil then
+					unless column[:unit].nil? then
 						if options[:unit_style] then
 							data = getUnit(data, column[:unit], options[:unit_style])
 						else
@@ -571,8 +580,9 @@ module SiteSpawner
 
 					return data
 				end
+
 				def url_for(path_or_resource, options = {})
-					if current_page != nil && !in_sitemap?(path_or_resource) then
+					unless current_page.nil? && in_sitemap?(path_or_resource) then
 						path = ''
 						if path_or_resource.is_a?(::Middleman::Sitemap::Resource) then
 							path = path_or_resource.path
@@ -596,7 +606,7 @@ module SiteSpawner
 							resource ||= sitemap.find_resource_by_path(path_or_resource)
 						end
 
-						if resource != nil && !resource.binary? then
+						unless resource.nil? && resource.binary? then
 							logger.debug "#{current_resource.source_file}: processing link to #{resource.source_file}."
 							site_spawner[:pages][resource.source_file] ||= {}
 							site_spawner[:pages][resource.source_file][current_resource.source_file] = current_resource
@@ -607,6 +617,7 @@ module SiteSpawner
 
 					super
 				end
+
 				def link_to(*args, &block)
 					url_arg_index = block_given? ? 0 : 1
 					options_index = block_given? ? 1 : 2
@@ -614,11 +625,12 @@ module SiteSpawner
 					options = args[options_index] || {}
 
 					if !in_sitemap?(url) && url !~ %r@^[\d\w]*?://@ && !url.include?('#') then
-						options.merge!( class: 'future', title: 'TBD' )
+						options.merge!(class: 'future', title: 'TBD')
 					end
 
 					super
 				end
+
 				def in_sitemap?(path_or_resource)
 					url = ''
 					if path_or_resource.is_a?(::Middleman::Sitemap::Resource) then
@@ -631,7 +643,7 @@ module SiteSpawner
 						url = url + 'index.html'
 					end
 
-					in_sitemap = sitemap.find_resource_by_destination_path(url) != nil
+					in_sitemap = !sitemap.find_resource_by_destination_path(url).nil?
 
 					if ignore_manager.ignored?(url) then
 						in_sitemap = true # XXX: Hacky way of saying that ignored resources should not throw an error.
