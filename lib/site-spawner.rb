@@ -13,7 +13,7 @@ module SiteSpawner
 		def initialize(app, options_hash={}, &block)
 			super
 
-			app.set(:layoutGen, self)
+			app.config[:layoutGen] = self
 
 			require 'uglifier'
 			require 'yaml'
