@@ -582,7 +582,7 @@ module SiteSpawner
 				end
 
 				def url_for(path_or_resource, options = {})
-					unless current_page.nil? && in_sitemap?(path_or_resource) then
+					if !current_page.nil? && in_sitemap?(path_or_resource) then
 						path = ''
 						if path_or_resource.is_a?(::Middleman::Sitemap::Resource) then
 							path = path_or_resource.path
@@ -606,7 +606,7 @@ module SiteSpawner
 							resource ||= sitemap.find_resource_by_path(path_or_resource)
 						end
 
-						unless resource.nil? && resource.binary? then
+						if !resource.nil? && !resource.binary? then
 							logger.debug "#{current_resource.source_file}: processing link to #{resource.source_file}."
 							site_spawner[:pages][resource.source_file] ||= {}
 							site_spawner[:pages][resource.source_file][current_resource.source_file] = current_resource
