@@ -643,7 +643,7 @@ module SiteSpawner
 						url = url + 'index.html'
 					end
 
-					in_sitemap = !sitemap.find_resource_by_destination_path(url).nil?
+					in_sitemap = sitemap.find_resource_by_destination_path(url).nil?
 
 					if ignore_manager.ignored?(url) then
 						in_sitemap = true # XXX: Hacky way of saying that ignored resources should not throw an error.
