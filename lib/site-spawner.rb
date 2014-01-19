@@ -42,6 +42,22 @@ module SiteSpawner
 					classes.push 'header_numbering'
 				end
 
+				head_str = ''
+				head_str << current_page.data['head-content'] unless current_page.data['head-content'].nil?
+				head_str << app.site_spawner[:head_content] unless app.site_spawner[:head_content].nil?
+
+				if !current_page.data['css'].nil? then
+					current_page.data['css'].each do |style|
+						head_str << app.stylesheet_link_tag(style)
+					end
+				end
+
+				if !current_page.data['js'].nil? then
+					current_page.data['js'].each do |js|
+						head_str << app.javascript_include_tag(js)
+					end
+				end
+
 				head = <<-HEAD.unindent
 					<!DOCTYPE HTML>
 					<html lang="en" class="#{classes.join(' ')}">
@@ -49,6 +65,7 @@ module SiteSpawner
 							<meta charset="utf-8">
 							<title>#{title}</title>
 							#{app.stylesheet_link_tag 'stylesheet'}
+							#{head_str}
 						</head>
 				HEAD
 				return head
