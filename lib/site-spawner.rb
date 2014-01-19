@@ -19,7 +19,7 @@ module SiteSpawner
 			require 'yaml'
 
 			stylesheets_dir = File.join(File.dirname(__FILE__), '..', 'styles')
-			Sass.load_paths << "#{stylesheets_dir}"
+			app.config[:sass_assets_paths].push(stylesheets_dir)
 
 			def generateHead()
 				app = @app
