@@ -19,7 +19,7 @@ module SiteSpawner
 			require 'yaml'
 
 			stylesheets_dir = File.join(File.dirname(__FILE__), '..', 'styles')
-			app.config[:sass_assets_paths].push(stylesheets_dir)
+			app.config[:sass_assets_paths].push(stylesheets_dir).uniq!
 
 			def generateHead()
 				app = @app
@@ -58,6 +58,32 @@ module SiteSpawner
 					end
 				end
 
+				if !current_page.data['jqplot'].nil? then
+					jqplot = current_page.data['jqplot']
+					if jqplot == true then
+						jsfiles = ["dist/jquery.min.js",
+							"dist/jquery.jqplot.min.js",
+							"dist/plugins/jqplot.highlighter.min.js",
+							"dist/plugins/jqplot.cursor.min.js",
+							"dist/plugins/jqplot.enhancedLegendRenderer.min.js",
+							"dist/plugins/jqplot.dateAxisRenderer.min.js",
+							"dist/plugins/jqplot.canvasTextRenderer.min.js",
+							"dist/plugins/jqplot.canvasAxisLabelRenderer.min.js",
+							"client.js"]
+
+						jsfiles.each do |file|
+							head_str << app.javascript_include_tag(file)
+						end
+
+						head_str << app.javascript_include_tag("main.js")
+
+						css = "dist/jquery.jqplot.min.css"
+						head_str << "<style jqplot>" << app.sprockets[css].to_s << "</style>"
+					elsif jqplot != false then
+						logger.error(current_page.source_file << ": Unrecognized jqplot value " << jqplot << ", should be a boolean.")
+					end
+				end
+
 				head = <<-HEAD.unindent
 					<!DOCTYPE HTML>
 					<html lang="en" class="#{classes.join(' ')}">
@@ -69,6 +95,22 @@ module SiteSpawner
 						</head>
 				HEAD
 				return head
+			end
+
+			app.after_configuration do
+				jsfiles = ["dist/jquery.min.js",
+					"dist/jquery.jqplot.min.js",
+					"dist/plugins/jqplot.highlighter.min.js",
+					"dist/plugins/jqplot.cursor.min.js",
+					"dist/plugins/jqplot.enhancedLegendRenderer.min.js",
+					"dist/plugins/jqplot.dateAxisRenderer.min.js",
+					"dist/plugins/jqplot.canvasTextRenderer.min.js",
+					"dist/plugins/jqplot.canvasAxisLabelRenderer.min.js",
+					"client.js"]
+
+				jsfiles.each do |file|
+					sprockets.import_asset "#{file}"
+				end
 			end
 
 			def generateBefore
