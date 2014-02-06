@@ -21,6 +21,25 @@ module SiteSpawner
 			stylesheets_dir = File.join(File.dirname(__FILE__), '..', 'styles')
 			app.config[:sass_assets_paths].push(stylesheets_dir).uniq!
 
+			app.after_configuration do
+				sprockets.append_path( File.join(File.dirname(__FILE__), '..', 'javascripts'))
+				["dist/jquery.min.js",
+					"dist/jquery.jqplot.min.js",
+					"dist/plugins/jqplot.highlighter.min.js",
+					"dist/plugins/jqplot.cursor.min.js",
+					"dist/plugins/jqplot.enhancedLegendRenderer.min.js",
+					"dist/plugins/jqplot.dateAxisRenderer.min.js",
+					"dist/plugins/jqplot.canvasTextRenderer.min.js",
+					"dist/plugins/jqplot.canvasAxisLabelRenderer.min.js",
+					"client.js",
+					"dist/jquery.jqplot.min.css"
+				].each do |file|
+					sprockets.import_asset file
+				end
+				# sprockets.import_asset 'client.js'
+				# puts sprockets.inspect
+			end
+
 			def generateHead()
 				app = @app
 				current_page = app.current_page
@@ -46,15 +65,15 @@ module SiteSpawner
 				head_str << current_page.data['head-content'] unless current_page.data['head-content'].nil?
 				head_str << app.site_spawner[:head_content] unless app.site_spawner[:head_content].nil?
 
-				if !current_page.data['css'].nil? then
-					current_page.data['css'].each do |style|
-						head_str << app.stylesheet_link_tag(style)
-					end
-				end
-
 				if !current_page.data['js'].nil? then
 					current_page.data['js'].each do |js|
 						head_str << app.javascript_include_tag(js)
+					end
+				end
+
+				if !current_page.data['css'].nil? then
+					current_page.data['css'].each do |style|
+						head_str << app.stylesheet_link_tag(style)
 					end
 				end
 
@@ -63,22 +82,20 @@ module SiteSpawner
 					if jqplot == true then
 						jsfiles = ["dist/jquery.min.js",
 							"dist/jquery.jqplot.min.js",
-							"dist/plugins/jqplot.highlighter.min.js",
-							"dist/plugins/jqplot.cursor.min.js",
 							"dist/plugins/jqplot.enhancedLegendRenderer.min.js",
 							"dist/plugins/jqplot.dateAxisRenderer.min.js",
 							"dist/plugins/jqplot.canvasTextRenderer.min.js",
 							"dist/plugins/jqplot.canvasAxisLabelRenderer.min.js",
+							"dist/plugins/jqplot.highlighter.min.js",
+							"dist/plugins/jqplot.cursor.min.js",
 							"client.js"]
 
 						jsfiles.each do |file|
 							head_str << app.javascript_include_tag(file)
 						end
 
-						head_str << app.javascript_include_tag("main.js")
-
-						css = "dist/jquery.jqplot.min.css"
-						head_str << "<style jqplot>" << app.sprockets[css].to_s << "</style>"
+						css = "/javascripts/dist/jquery.jqplot.min.css"
+						head_str << '<link rel="stylesheet" href="' << css << '" />'
 					elsif jqplot != false then
 						logger.error(current_page.source_file << ": Unrecognized jqplot value " << jqplot << ", should be a boolean.")
 					end
@@ -95,22 +112,6 @@ module SiteSpawner
 						</head>
 				HEAD
 				return head
-			end
-
-			app.after_configuration do
-				jsfiles = ["dist/jquery.min.js",
-					"dist/jquery.jqplot.min.js",
-					"dist/plugins/jqplot.highlighter.min.js",
-					"dist/plugins/jqplot.cursor.min.js",
-					"dist/plugins/jqplot.enhancedLegendRenderer.min.js",
-					"dist/plugins/jqplot.dateAxisRenderer.min.js",
-					"dist/plugins/jqplot.canvasTextRenderer.min.js",
-					"dist/plugins/jqplot.canvasAxisLabelRenderer.min.js",
-					"client.js"]
-
-				jsfiles.each do |file|
-					sprockets.import_asset "#{file}"
-				end
 			end
 
 			def generateBefore

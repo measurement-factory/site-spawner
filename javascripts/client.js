@@ -49,7 +49,7 @@ function webSocket(wsUri) {
 	websocket.onopen    = function (event) { onOpen(event); };
 	websocket.onclose   = function (event) { onClose(event); };
 	websocket.onmessage = function (event) { onMessage(event); };
-	websocket.onerror   = function (event) { onError(event); };
+	// websocket.onerror   = function (event) { onError(event); };
 }
 
 function initChart() {
@@ -95,7 +95,7 @@ function initChart() {
 }
 
 function renderChart() {
-	if (document.querySelector('#myChart:hover') || (chart.plugins.cursor !== undefined && chart.plugins.cursor._zoom.isZoomed))  {
+	if (chart.plugins.cursor._zoom.isZoomed || document.querySelector('#myChart:hover'))  {
 		return; // Exits out of function if we are called and do not need to replot,
 				// due to above conditions.
 	}
@@ -160,15 +160,14 @@ function onClose(event)  {
 	--serversOpen;
 }
 
-function onError(event)  {
-	// writeToScreen('<span style="color: red;">ERROR: ' + event.data + ', Socket URL: ' + event.target.URL + '</span>');
-}
+// function onError(event)  {
+// 	// writeToScreen('<span style="color: red;">ERROR: ' + event.data + ', Socket URL: ' + event.target.URL + '</span>');
+// }
 
 function onMessage(event)  {
 	++received;
 
 	grokBlob(event.data); // grokBlob passes output to handleStats.
-	// updateElements(); // Update elements, every message.
 }
 
 function handleStats(stats) {
@@ -198,17 +197,6 @@ function handleStats(stats) {
 		runTimeMinutes = '0' + runTimeMinutes.toString();
 	}
 	tests[testID].runTime = runTime.getHours() + ':' + runTimeMinutes;
-
-	// writeToScreen(
-	// 	"<pre>" + "From Server: " + websocketUrl + ' and test #' + testID +
-	// 	"\n\t" + "read " + stats.byteLength + " out of " + stats.blobSize +
-	// 	"\n\t" + "xactions: " + stats.xactCount +
-	// 	"\n\t" + "duration: "  + stats.duration + ' seconds' +
-	// 	"\n\t" + "rate: " + stats.rate.toFixed(0) + '/s' +
-	// 	"\n\t" + "timeStamp: " + stats.timeStamp +
-	// 	"\n\t" + "startTime: " + stats.startTime +
-	// 	'</pre>', 'black'
-	// );
 
 	if (!testIDArray.contains(testID)) {
 		testIDArray.push(testID);
@@ -262,23 +250,3 @@ function grokBlob(blob) {
 		handleStats(stats);
 	};
 }
-
-// function writeToScreen(message, color)  {
-// 	var paragraph = document.createElement("p");
-// 	var output = document.querySelector('#output');
-// 	paragraph.style.wordWrap = "break-word";
-// 	paragraph.style.color = color;
-// 	paragraph.innerHTML = message;
-// 	output.appendChild(paragraph);
-// 	if (document.getElementById('auto-scroll').checked) {
-// 		output.scrollTop = output.scrollHeight;
-// 	}
-// }
-
-// function updateElements() {
-// 	var el = document.querySelector('#received #servNum');
-// 	el.innerHTML = testIDArray.length;
-
-// 	el = document.querySelector('#received #num');
-// 	el.innerHTML = received;
-// }
