@@ -6,7 +6,7 @@ class String
 end
 
 module SiteSpawner
-	# Require core library
+	# Require middleman core library
 	require 'middleman-core'
 
 	class LayoutGenerator < ::Middleman::Extension
@@ -36,8 +36,6 @@ module SiteSpawner
 				].each do |file|
 					sprockets.import_asset file
 				end
-				# sprockets.import_asset 'client.js'
-				# puts sprockets.inspect
 			end
 
 			def generateHead()
