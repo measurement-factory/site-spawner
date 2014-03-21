@@ -46,9 +46,9 @@ module SiteSpawner
 
 				title = getTitle(current_page, 'title-head')
 
-				if !current_page.data['title_head_suffix'].nil? then
+				if current_page.data['title_head_suffix'] then
 					suffix = current_page.data['title_head_suffix']
-				elsif !app.site_spawner[:title_head_suffix].nil? then
+				elsif app.site_spawner[:title_head_suffix] then
 					suffix = app.site_spawner[:title_head_suffix]
 				else
 					suffix = app.site_spawner[:site_title]
